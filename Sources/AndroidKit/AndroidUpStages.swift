@@ -786,10 +786,15 @@ actor AndroidRuntime {
             }
             // An unreadable Emulator may already hold this AVD; then our launcher exits and the
             // AVD that later appears is not ours (ADR-0043). Checked after readiness, before accepting.
-            if let launcherPID, try await androidLauncherPresence(launcherPID, runner: hostRunner) == false {
+            // An unconfirmed launcher is not accepted either, as in the app-file boot (ADR-0043).
+            if let launcherPID, case let alive = try await androidLauncherPresence(launcherPID, runner: hostRunner),
+                alive != true
+            {
                 let unreadable = all.filter { $0.avd == nil }.map(\.serial)
                 throw DomainError(
-                    summary: "the Emulator launcher for \(avd) exited before the AVD became ready",
+                    summary: alive == false
+                        ? "the Emulator launcher for \(avd) exited before the AVD became ready"
+                        : "whether the Emulator launcher for \(avd) (pid \(launcherPID)) is alive could not be confirmed",
                     observed: unreadable.isEmpty ? nil
                         : "Emulators with an unreadable AVD name: \(unreadable.joined(separator: ", "))",
                     remediation: Remediation(

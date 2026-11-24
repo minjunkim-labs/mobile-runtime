@@ -504,8 +504,10 @@ struct AndroidRuntimeTests {
         #expect(device.serial == serial)
     }
 
-    @Test("a started Emulator is accepted only while its launcher lives beside an unreadable Emulator", arguments: [true, false])
-    func unreadableOtherEmulatorNeedsLiveLauncher(launcherAlive: Bool) async throws {
+    @Test("a started Emulator is accepted only while its launcher lives beside an unreadable Emulator",
+          arguments: ["alive", "exited", "unknown"])
+    func unreadableOtherEmulatorNeedsLiveLauncher(launcher: String) async throws {
+        let launcherAlive = launcher == "alive"
         let scenario = try runtimeScenario(native: true, abis: [])
         let foreign = "List of devices attached\nemulator-5556 device\n"
         var responses = readyResponses(serial)
@@ -513,7 +515,9 @@ struct AndroidRuntimeTests {
         responses[command("adb", ["devices"])] = [.ok(foreign), .ok(foreign + "\(serial) device\n")]
         responses[command("adb", ["-s", "emulator-5556", "emu", "avd", "name"])] = [.failed(1, "KO: authentication\n")]
         responses[command("adb", ["-s", serial, "emu", "avd", "name"])] = [.ok("Pixel\nOK\n")]
-        responses[command("ps", ["-p", "7001", "-o", "pid="])] = [launcherAlive ? .ok("7001\n") : .failed(1, "")]
+        responses[command("ps", ["-p", "7001", "-o", "pid="])] = [
+            ["alive": .ok("7001\n"), "exited": .failed(1, "")][launcher] ?? .failed(1, "ps: Operation not permitted\n"),
+        ]
         if launcherAlive {
             let (device, state) = try await runDeviceStage(scenario, responses)
             #expect(device.state == .started)
@@ -521,7 +525,7 @@ struct AndroidRuntimeTests {
             #expect(state.all.contains { $0.executable == "emulator" && $0.arguments == ["-avd", "Pixel"] })
         } else {
             let error = await #expect(throws: DomainError.self) { try await runDeviceStage(scenario, responses) }
-            #expect(error?.summary.contains("launcher") == true)
+            #expect(error?.summary.contains(launcher == "exited" ? "exited" : "could not be confirmed") == true)
             #expect(error?.observed?.contains("emulator-5556") == true)
         }
     }
