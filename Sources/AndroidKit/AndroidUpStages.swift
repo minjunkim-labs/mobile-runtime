@@ -176,6 +176,7 @@ actor AndroidRuntime {
             avd: current.avd,
             expectedSerial: current.serial,
             launcherPID: current.launcherPID,
+            preexisting: current.launcherPID == nil ? [] : Set(running.map(\.serial)),
             product: product,
             deadline: ContinuousClock.now + timeouts.boot
         )
@@ -755,11 +756,16 @@ actor AndroidRuntime {
             let fields = line.split(whereSeparator: \.isWhitespace)
             guard fields.count >= 2, fields[0].hasPrefix("emulator-") else { continue }
             let serial = String(fields[0])
-            let identity = try await hostRunner.run(adb(
-                ["-s", serial, "emu", "avd", "name"], sdk: sdk
-            ))
-            let avd = identity.terminationStatus.isSuccess
-                ? androidAVDName(from: identity.standardOutput) : nil
+            let avd: String?
+            do {
+                let identity = try await hostRunner.run(adb(
+                    ["-s", serial, "emu", "avd", "name"], sdk: sdk
+                ))
+                avd = identity.terminationStatus.isSuccess
+                    ? androidAVDName(from: identity.standardOutput) : nil
+            } catch ProcessError.timedOut {
+                avd = nil  // a console that never answers is as unreadable as one that refuses
+            }
             result.append(RunningEmulator(serial: serial, avd: avd, adbState: String(fields[1])))
         }
         return result
@@ -769,13 +775,15 @@ actor AndroidRuntime {
         avd: String,
         expectedSerial: String?,
         launcherPID: Int32? = nil,
+        preexisting: Set<String> = [],
         product: AndroidBuiltProduct,
         deadline: ContinuousClock.Instant
     ) async throws -> (serial: String, api: Int, abi: String) {
         let sdk = try doctorContext.requiredSDKRoot()
         while true {
             let all = try await runningEmulators(sdk: sdk)
-            let running = all.filter { $0.avd == avd }
+            // A serial that ran before our launcher is never the Emulator it starts.
+            let running = all.filter { $0.avd == avd && !preexisting.contains($0.serial) }
             var ready: (serial: String, api: Int, abi: String)?
             if running.count == 1, let emulator = running.first,
                 expectedSerial == nil || expectedSerial == emulator.serial,
