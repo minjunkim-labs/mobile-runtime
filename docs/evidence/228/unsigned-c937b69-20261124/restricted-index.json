@@ -93,8 +93,8 @@
     {
       "id": "bundle-composer",
       "path": "receipts/compose-bundle.py",
-      "bytes": 22559,
-      "sha256": "51c6b16baded4a0891e0e67d40946054330396207393dab496226bf066797aa1"
+      "bytes": 25245,
+      "sha256": "ef0df44e1f3896ec1ba2e2d46132d0459b7659fafb4b152c21bd8d6f20b77e2f"
     },
     {
       "id": "f228-raw-fadb68825eb8ebc4",
@@ -113,6 +113,12 @@
       "path": "r228/cancel.py",
       "bytes": 3158,
       "sha256": "5bb61819fbcf48c40f8fa091eb717f64ce00c7237c6d00be64f0de90d61f191a"
+    },
+    {
+      "id": "f228-raw-13de0e177ba9cbe8",
+      "path": "r228/cleanup-02.json",
+      "bytes": 347,
+      "sha256": "f3b555b917ddb39e4ced7fa7f43eecb3560c320828549d110b36df3da89bce82"
     },
     {
       "id": "f228-cleanup",
@@ -137,6 +143,12 @@
       "path": "r228/common.py",
       "bytes": 1701,
       "sha256": "97b0ac4d61a73ecd557a3580109ee2133799673e6385a26648682cb96857c605"
+    },
+    {
+      "id": "f228-raw-86b9d20a1f1e208f",
+      "path": "r228/console-token-copies-gui-02.json",
+      "bytes": 1025,
+      "sha256": "3010f95796360fb7b8e9e633a1c9be4b0935ab15ce26ff6fef7f07a23a2b57be"
     },
     {
       "id": "f228-console-token-copies-gui",
@@ -193,6 +205,24 @@
       "sha256": "55ca5182bc1bf67d8dbce61ffae7bd942253f7a4eaab65dbce8de7ae32d34bad"
     },
     {
+      "id": "f228-raw-e0ea1390c5cd7a2e",
+      "path": "r228/emulators/gui35-02/emulator.log",
+      "bytes": 10303,
+      "sha256": "1e1a7b45e891985d1b801785edf5c62729c6947795d0b1405a94c83bb988ec25"
+    },
+    {
+      "id": "f228-raw-bad4c8cb08320a43",
+      "path": "r228/emulators/gui35-02/exit.json",
+      "bytes": 16,
+      "sha256": "982b9e9bfb10ffe83cad665807abcfd3fa97b37822db5ab7831157a499548a9e"
+    },
+    {
+      "id": "f228-raw-5bcde604eba3b6d7",
+      "path": "r228/emulators/gui35-02/owner.json",
+      "bytes": 642,
+      "sha256": "5844ba22e542a96ea444694a36198bfaf69d559892fc204d75923cf1b890a7ab"
+    },
+    {
       "id": "f228-binaries",
       "path": "r228/frozen-executables.json",
       "bytes": 1431,
@@ -205,16 +235,196 @@
       "sha256": "d40847bb2c9734261aae496888e595f81a75129acc3491050c7cc5caf8fd7d65"
     },
     {
+      "id": "f228-raw-3b39c491f0a05e74",
+      "path": "r228/gui/android-gui-nia/owner.json",
+      "bytes": 448,
+      "sha256": "cf5766314936217f27545eba81f478ee0c65f57201ce962eece8cb2d7f7140a4"
+    },
+    {
+      "id": "f228-raw-a1379652a5f25aa7",
+      "path": "r228-safe/f228-raw-a1379652a5f25aa7.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
       "id": "f228-raw-42cbff6255b86ba0",
       "path": "r228/gui/android-gui-todo/owner.json",
       "bytes": 449,
-      "sha256": "8a525aec16a953aa9018e4f5aa06ff87da5b8b0ea04881ea58c27601d62c5e14"
+      "sha256": "af0070795c45a6bc77de2127cdd2986ea8db7eafc5254dd884a1ee1369ff2a34"
     },
     {
       "id": "f228-raw-534da87be1ade6be",
       "path": "r228-safe/f228-raw-534da87be1ade6be.raw",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "f228-raw-c8e15901a8d4e42f",
+      "path": "r228/gui/android-gui-todo-01/owner.json",
+      "bytes": 449,
+      "sha256": "8a525aec16a953aa9018e4f5aa06ff87da5b8b0ea04881ea58c27601d62c5e14"
+    },
+    {
+      "id": "f228-raw-758d24fe6dc30231",
+      "path": "r228-safe/f228-raw-758d24fe6dc30231.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "f228-raw-3e9d34ea98126eee",
+      "path": "r228/gui-evidence/22-after-build-install.json",
+      "bytes": 154,
+      "sha256": "b96939145124df771a9e77f58c323768eff7e011e29618a62b0a4d1800050a28"
+    },
+    {
+      "id": "f228-raw-7fe0aebd854aa06d",
+      "path": "r228/gui-evidence/22-after-up-install.json",
+      "bytes": 416,
+      "sha256": "2243691e04a4c768b3228c327a8f99f41c5d99b09d41b84df1093cd6d9aee472"
+    },
+    {
+      "id": "f228-raw-bb572cb18b4f0897",
+      "path": "r228/gui-evidence/22-before-build-install.json",
+      "bytes": 153,
+      "sha256": "48a0b9908db07a2da26aab86adcb4890ff5366c3d432265f663494d5c8aa4ccf"
+    },
+    {
+      "id": "f228-raw-cd0a9a6b455aeace",
+      "path": "r228/gui-evidence/22-build-cancelled-358-zoom.jpg",
+      "bytes": 166863,
+      "sha256": "8179896b0ea1d9adb857ff3e22d6f74f634b4032422aab8c66f2618f4c4fd320"
+    },
+    {
+      "id": "f228-raw-06c27091861a7963",
+      "path": "r228/gui-evidence/22-build-cancelled-358.jpg",
+      "bytes": 46289,
+      "sha256": "4ca041b8bb0426661f094b21213fcf9fbba128bf51a0150908736c52fd55039e"
+    },
+    {
+      "id": "f228-raw-b33ccef40b460042",
+      "path": "r228/gui-evidence/22-build-complete-device-kept-353.jpg",
+      "bytes": 25576,
+      "sha256": "c1b32b0c9d06828ef7f8061401388decdf302a3703b6fb081808a4105f459527"
+    },
+    {
+      "id": "f228-raw-df7c7c301427a142",
+      "path": "r228/gui-evidence/22-build-complete.jpg",
+      "bytes": 47149,
+      "sha256": "85e99791ab48db25b565bf48dd09df7121915404f6d5ab48609360d3c5b70754"
+    },
+    {
+      "id": "f228-raw-2934b31299d6d9ac",
+      "path": "r228/gui-evidence/22-build-running.jpg",
+      "bytes": 46892,
+      "sha256": "505f9f0212b0e7a5b3d05393a9facaf68ef0565bd0bb3cae032224261f6f7b5f"
+    },
+    {
+      "id": "f228-raw-4e2d53115dd9938e",
+      "path": "r228/gui-evidence/22-doctor.jpg",
+      "bytes": 111112,
+      "sha256": "a78f0c5e4328c8682dfcfd59791ef16a9e1a5c6deb618591a368976962e61bfe"
+    },
+    {
+      "id": "f228-raw-1f0f6f039f15a35a",
+      "path": "r228/gui-evidence/22-down-complete.jpg",
+      "bytes": 47759,
+      "sha256": "8b780188deef12403054dc3a649b297ac021a080d8eeb68ed64aa28ea451985e"
+    },
+    {
+      "id": "f228-raw-67a1e7fffe5d3f02",
+      "path": "r228/gui-evidence/22-setup-done.jpg",
+      "bytes": 48955,
+      "sha256": "6fdfee3e5f2b78491b4b7552be60b699b962e18f9d4280f866d6ed26d507ca48"
+    },
+    {
+      "id": "f228-raw-1543fa49c7dda6d5",
+      "path": "r228/gui-evidence/22-setup-plan.jpg",
+      "bytes": 49691,
+      "sha256": "75e8f81d48de0d2413f825d7b1edb37b6cc9168d36ddb05faaeec2bf1f143303"
+    },
+    {
+      "id": "f228-raw-541f2e06758a4252",
+      "path": "r228/gui-evidence/22-up-complete.jpg",
+      "bytes": 47165,
+      "sha256": "fdc99a17f69e8d0057cb6a791836ce01ee0c763126cb6b3a993a0e31a20c08c0"
+    },
+    {
+      "id": "f228-raw-c3adba8187d0d65f",
+      "path": "r228/gui-evidence/23-after-build-install.json",
+      "bytes": 152,
+      "sha256": "64d5e70f93640cffc7bff39f1bb0192394072593bc72e26fb9ee4bed67522390"
+    },
+    {
+      "id": "f228-raw-30f703de185a6b43",
+      "path": "r228/gui-evidence/23-after-up-install.json",
+      "bytes": 413,
+      "sha256": "caa25ebeeb575ec7d1c347f771bcabc3aaa8dc46e0279458ad78cc373dd69862"
+    },
+    {
+      "id": "f228-raw-5f082b16bb398fe7",
+      "path": "r228/gui-evidence/23-before-build-install.json",
+      "bytes": 151,
+      "sha256": "3a27285ce41a45d8dc5e2306ab530bd037802a6c6090d820e6cd823479730a18"
+    },
+    {
+      "id": "f228-raw-f4a58901211f9735",
+      "path": "r228/gui-evidence/23-build-complete-selection-kept-353.jpg",
+      "bytes": 18853,
+      "sha256": "061ce597c3c4eb5ce2517df9ecbbb131aafa31b49b956340ea0324b433ce0c4e"
+    },
+    {
+      "id": "f228-raw-4f196491744b557e",
+      "path": "r228/gui-evidence/23-build-complete.jpg",
+      "bytes": 47546,
+      "sha256": "55e4644a9e4f4c0955b35a15d6e6407857fbc4eb78835567f31abda2daf924c6"
+    },
+    {
+      "id": "f228-raw-fa18db3b615ffb77",
+      "path": "r228/gui-evidence/23-build-running.jpg",
+      "bytes": 46955,
+      "sha256": "9df8754abb315c3caef3bcfcfa9247078b16c4ba08ecad7fd1122b23a41a7678"
+    },
+    {
+      "id": "f228-raw-5d880a5a7393cc13",
+      "path": "r228/gui-evidence/23-device-selected-before-build.jpg",
+      "bytes": 18875,
+      "sha256": "fbdbf438f9c1373aef08b1cc2f4893f873d2f8eefa5539e6534578cffb84b7e5"
+    },
+    {
+      "id": "f228-raw-5e95263f6d38e391",
+      "path": "r228/gui-evidence/23-doctor-module-required.jpg",
+      "bytes": 43024,
+      "sha256": "9eb6b666cb8136cc10f98378f244fe3ef90986a233d74b1f8d3ddec825f897a7"
+    },
+    {
+      "id": "f228-raw-976544e6529df725",
+      "path": "r228/gui-evidence/23-doctor-variant-required.jpg",
+      "bytes": 43232,
+      "sha256": "c0e0637f713f702ea7ed2b2d8fd65c6681170151763bb30e1dea8964a4997b73"
+    },
+    {
+      "id": "f228-raw-e3c7852f43960f7f",
+      "path": "r228/gui-evidence/23-down-complete.jpg",
+      "bytes": 47764,
+      "sha256": "14d4062c9a452217b5c901b400fba0dc98e4c9846d52f1d2c0069989a5afcf36"
+    },
+    {
+      "id": "f228-raw-9ff92e7c0a521ade",
+      "path": "r228/gui-evidence/23-setup-done.jpg",
+      "bytes": 48863,
+      "sha256": "0601897bbaed6983bc32aaa8d5b6a8ee36afcfc89819414b7eb4e4696fae5eb9"
+    },
+    {
+      "id": "f228-raw-1f77d9868a624011",
+      "path": "r228/gui-evidence/23-setup-plan-explicit-selection.jpg",
+      "bytes": 49570,
+      "sha256": "7ff17abbce4b7a8d485af4cb7af7bfa4eb58491ac50b064f895ce2e70dcfb242"
+    },
+    {
+      "id": "f228-raw-a6a6732641249e21",
+      "path": "r228/gui-evidence/23-up-complete.jpg",
+      "bytes": 47559,
+      "sha256": "4fa6e680832112ee4faefcfb094d20f8ecb7f163867c214e7b9e3154943cd771"
     },
     {
       "id": "f228-raw-a4644d32eeac9669",
@@ -381,6 +591,72 @@
     {
       "id": "f228-raw-41500b2c222baa8e",
       "path": "r228/observations/21/up-02-after-deny/ui.xml",
+      "bytes": 26658,
+      "sha256": "8f553b1607e821acd6c779e8027b61efa66febe3080dca677bc03d252a6661cb"
+    },
+    {
+      "id": "f228-raw-8e6a4703eef55959",
+      "path": "r228/observations/22/gui-down-01/after-down.json",
+      "bytes": 1743,
+      "sha256": "947a3ca579cfa413b76a009b07f6fdbd568e035444e729c74ac449a003355004"
+    },
+    {
+      "id": "f228-raw-3b842cbd3c6e5f0e",
+      "path": "r228/observations/22/gui-up-01/observation.json",
+      "bytes": 833,
+      "sha256": "b401f12ff463a509b493e07b5bfbed4f6b3ad1de9eee5c8b659553a6a477a082"
+    },
+    {
+      "id": "f228-raw-6b1c62e9157806e9",
+      "path": "r228/observations/22/gui-up-01/screen.png",
+      "bytes": 55076,
+      "sha256": "ae6d8f492b79a591abad577451d68284c00bb21e8075ee1e1dba0d93dae20f6a"
+    },
+    {
+      "id": "f228-raw-69471c75ccbf2119",
+      "path": "r228/observations/22/gui-up-01/ui.xml",
+      "bytes": 7937,
+      "sha256": "204f2e0b5756e51c3f0c5c883c33921c5a73314baec5a2284471abef26399555"
+    },
+    {
+      "id": "f228-raw-7ace89c558d60b36",
+      "path": "r228/observations/23/gui-down-01/after-down.json",
+      "bytes": 1705,
+      "sha256": "17eb97a4131fff6362a0f70fd4830aaae441f37ef5ac57c9be75765872805990"
+    },
+    {
+      "id": "f228-raw-04c4c6354cd73f73",
+      "path": "r228/observations/23/gui-up-01/observation.json",
+      "bytes": 795,
+      "sha256": "b08e2a67d705ed867a830af4a7f990095488622b8fa2b8e547c66b8f6fa7387a"
+    },
+    {
+      "id": "f228-raw-6ba22b7fab0c8151",
+      "path": "r228/observations/23/gui-up-01/screen.png",
+      "bytes": 264071,
+      "sha256": "feb856f76b6ab919b043a69522e70075799c1c04acc9cfd4980d16b0e216f1fa"
+    },
+    {
+      "id": "f228-raw-dd9a28d1200db714",
+      "path": "r228/observations/23/gui-up-01/ui.xml",
+      "bytes": 5104,
+      "sha256": "5dab552052d936c20bcb2e7cd7e9f473838101e46cecce3f36197bf367efecaf"
+    },
+    {
+      "id": "f228-raw-0c3d5345a656540d",
+      "path": "r228/observations/23/gui-up-01-after-deny/observation.json",
+      "bytes": 999,
+      "sha256": "ed8b3b922b6a8cb4bba05e5f0ca26504c2ab7c2f4ff9113b217b1d8f1b4e1b4e"
+    },
+    {
+      "id": "f228-raw-36e63db7fb30b5f9",
+      "path": "r228/observations/23/gui-up-01-after-deny/screen.png",
+      "bytes": 293744,
+      "sha256": "8df10495952a8c79accf063479f519912dac642f4cc1fabd076c81c4b7dc50d8"
+    },
+    {
+      "id": "f228-raw-31de0d136e0c3275",
+      "path": "r228/observations/23/gui-up-01-after-deny/ui.xml",
       "bytes": 26658,
       "sha256": "8f553b1607e821acd6c779e8027b61efa66febe3080dca677bc03d252a6661cb"
     },
@@ -1213,6 +1489,30 @@
       "sha256": "fa35640e019e1822cbae53923c032427ff502263ac8bea1bededc399474649a3"
     },
     {
+      "id": "f228-raw-114adb15440c8df2",
+      "path": "r228/runs/22/human-gradle-stop-02.json",
+      "bytes": 686,
+      "sha256": "de23da058cb655c989be38958190a65cfe25c6dd3b8a440fe2e7beea5e1419ea"
+    },
+    {
+      "id": "f228-raw-01dc1665526fd28c",
+      "path": "r228/runs/22/human-gradle-stop-02.owner.json",
+      "bytes": 110,
+      "sha256": "2d0820d56856699b0a7d8d9de7e41d4d45f42195d634becde839cb92d3b0388b"
+    },
+    {
+      "id": "f228-raw-6b682293af515634",
+      "path": "r228/runs/22/human-gradle-stop-02.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "f228-raw-fffa8f8dd2cca658",
+      "path": "r228/runs/22/human-gradle-stop-02.stdout",
+      "bytes": 31,
+      "sha256": "9bb9c19238f3fdde3213f2be84912b0c7e87b3e2295ec372ec245deab200d46d"
+    },
+    {
       "id": "f228-raw-aa1223a67d1370d2",
       "path": "r228/runs/22/human-wrapper-01.json",
       "bytes": 688,
@@ -1285,6 +1585,30 @@
       "sha256": "fa35640e019e1822cbae53923c032427ff502263ac8bea1bededc399474649a3"
     },
     {
+      "id": "f228-raw-88de5c97f36db07b",
+      "path": "r228/runs/23/human-gradle-stop-02.json",
+      "bytes": 685,
+      "sha256": "4f1d7a44d5172608dc4abccfd37c844aefaf3d31cb1ebefaec32c42556c7de35"
+    },
+    {
+      "id": "f228-raw-85ac69acaabf16fa",
+      "path": "r228/runs/23/human-gradle-stop-02.owner.json",
+      "bytes": 110,
+      "sha256": "e2a2a801ba75f0acef2d85fd94e7f66fccdcb9b3e749d4361d84b2701e8207c3"
+    },
+    {
+      "id": "f228-raw-6e8d88a6c21a740b",
+      "path": "r228/runs/23/human-gradle-stop-02.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "f228-raw-425435e9918bf35e",
+      "path": "r228/runs/23/human-gradle-stop-02.stdout",
+      "bytes": 31,
+      "sha256": "9bb9c19238f3fdde3213f2be84912b0c7e87b3e2295ec372ec245deab200d46d"
+    },
+    {
       "id": "f228-raw-1b9e65f4cb263d73",
       "path": "r228/runs/23/human-wrapper-01.json",
       "bytes": 685,
@@ -1341,8 +1665,8 @@
     {
       "id": "origin-index",
       "path": "ORIGIN-INDEX.json",
-      "bytes": 39290,
-      "sha256": "a98b054b40ff5ce505b0bc3a51bd3aa0eb03ffc9e5abc51d29270284c336e7f0"
+      "bytes": 49312,
+      "sha256": "9833ef03d8132558d0b8c6c5b62e51f4cd4ea602d566275837fa9beee8c1101c"
     }
   ]
 }

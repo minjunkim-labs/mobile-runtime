@@ -128,7 +128,7 @@
         "knownGoodReceipt": "baseline-native-android",
         "selectedCurrentInputs": "f228-input-set",
         "preparationPolicy": "New input set for alpha.18: upstream clones at the fixed SHAs, owned SDK copied from host SDK packages, license records copied with hashes equal to the alpha.17 reused records, new AVDs, empty Gradle user homes (cold Gradle cache). The alpha.17 fixed inputs were missing on disk.",
-        "proofBoundary": "Only the native Android CLI rows and listed boundaries on alpha.18 are promoted. GUI rows were not run (GUI control access denied). Android physical device unverified (AC19).",
+        "proofBoundary": "Only the native Android CLI and GUI rows and listed boundaries on alpha.18 are promoted. The first GUI attempt was refused GUI control access; the GUI rows ran after the owner granted it. Android physical device unverified (AC19).",
         "runtimeExecutionInputs": "f228-fresh-inputs",
         "inputRevalidation": "new input set; no prior input to re-audit",
         "runtimeAvailability": "f228-input-set"
