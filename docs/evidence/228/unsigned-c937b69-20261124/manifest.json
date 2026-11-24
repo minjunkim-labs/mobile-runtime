@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "evidenceClass": "actual",
+  "candidate": {
+    "schemaVersion": 1,
+    "productVersion": "0.1.0-alpha.18",
+    "sourceSHA": "c937b694cfde4f0eeb0453ddc41ecb7f59f6b090",
+    "coreBuildIdentity": "f24b349c1d78acf5a624a76466b2b42258c0702e5e17195cc88ce53bacfeb286",
+    "ciRun": null,
+    "signing": "unsigned",
+    "notarization": "not-requested",
+    "distributionReady": false,
+    "artifacts": {
+      "cli": {
+        "file": "runstir-0.1.0-alpha.18-macos-arm64.tar.gz",
+        "sha256": "667a978936cfa02c26f8c0eacd3a13fdf22a7352f329ca24fc890f637bf4b5b2"
+      },
+      "gui": {
+        "file": "Runstir-0.1.0-alpha.18-macos-arm64.dmg",
+        "sha256": "9ef15cfa3c6ed11479d3952c6d2f0af8bfe8b2362b16e796f1196b2ed2db7750"
+      },
+      "homebrew": {
+        "file": "runstir-candidate.rb",
+        "sha256": "b539280f27175c368da851def3831d3bdfe5bd6e12666b63a32aa1dde248270b"
+      }
+    }
+  },
+  "candidateRef": "candidate",
+  "originIndexes": [
+    "origin-index"
+  ],
+  "documents": {
+    "tuples": {
+      "path": "tuples.json",
+      "sha256": "654da56b3ddcb0fef49b9d1b1e487e6c68636a7f1709476296c4ed51f9879fe1"
+    },
+    "results": {
+      "path": "results.json",
+      "sha256": "4743ec333ddd530d215728d09a2f4d59033239f884bb6566de362d15f8b16ce0"
+    },
+    "restrictedIndex": {
+      "path": "restricted-index.json",
+      "sha256": "25df46729391a706d3e608f03635f3f189f90a77880a7764f10ae5dddfafb10c"
+    },
+    "report": {
+      "path": "report.md",
+      "sha256": "1bb79ccb9e90dacd882d2ed9c6fea607ae473bb27b754e5ea446317d53fcd111"
+    }
+  },
+  "sourceCI": {
+    "evidence": "source-ci",
+    "runID": 45349757750
+  },
+  "priorResults": [],
+  "publicReview": {
+    "reviewer": "claude-native-android-alpha18",
+    "status": "reviewed",
+    "scope": "text-only"
+  }
+}
