@@ -21,3 +21,7 @@ claim은 이 프로젝트의 Runstir 실행이 그 기기에 남긴 앱을 뜻�
 ## 기기에 닿지 않은 up의 reservation (#373, 2026-11-02)
 
 `up`은 단계 전에 기기 reservation을 쓴다. 이때 그 기기에 있던 이 프로젝트의 reservation을 대체한다. `up`이 빌드된 제품 없이 끝나면 fail-fast pipeline이 런타임 단계를 하나도 실행하지 않은 것이다. 이때 `up`은 대체한 reservation을 되돌린다. 이전 claim이 있으면 다시 쓰고, 없으면 파일을 지운다. 빌드 중 취소와 빌드 실패가 여기에 해당한다. 기기에 닿은 뒤의 실패와 강제 종료가 남긴 claim 없는 reservation은 그대로 보존한다. 소유 프로젝트의 `down`은 여전히 그것을 바꾸지 않는다. 다른 프로젝트의 Android `up`이 이 reservation 때문에 거부되면 owner 프로젝트에서 그 AVD를 지정한 `mobile up --platform android --device <AVD>`을 다시 실행해 결과를 기록하고 `mobile down --platform android`을 실행하라고 안내한다. iOS reservation은 바꾸지 않는다.
+
+## AVD 이름을 읽지 못한 다른 Emulator (#383, 2026-11-24)
+
+`up`은 `adb -s <serial> emu avd name`에 답하지 않는 Emulator를 대상 AVD 선택에서 뺀다. 다른 HOME·사용자가 띄워 console 인증 token이 다른 Emulator, 부팅 중이거나 `offline`인 Emulator가 여기에 해당한다. 그런 Emulator 하나 때문에 `up` 전체를 멈추지 않는다. 그 Emulator는 재사용하지 않고 소유 기록에도 넣지 않는다. 그 Emulator가 대상 AVD를 이미 잡고 있을 수 있다. 그래서 `up`이 Emulator를 새로 띄운 경우에는 매 준비 확인에서 Runstir가 시작한 launcher가 살아 있는지 `ps -p`로 본다. launcher가 끝났으면 그 AVD를 `started`로 기록하지 않고 즉시 실패한다. 실패 문구는 이름을 읽지 못한 serial을 함께 보고한다. ADR-0043과 같은 기준이다. 앱 파일 작업의 부팅 후보 규칙(ADR-0043)은 바꾸지 않는다.

@@ -38,7 +38,8 @@ public func androidFlutterReentry(anchor: ProjectAnchor, logs: RunLogs? = nil) t
 actor AndroidRuntime {
     private struct RunningEmulator: Sendable, Equatable {
         let serial: String
-        let avd: String
+        /// nil when the console does not answer, e.g. an Emulator launched with another HOME's auth token.
+        let avd: String?
         let adbState: String
     }
 
@@ -174,6 +175,7 @@ actor AndroidRuntime {
         let ready = try await awaitReady(
             avd: current.avd,
             expectedSerial: current.serial,
+            launcherPID: current.launcherPID,
             product: product,
             deadline: ContinuousClock.now + timeouts.boot
         )
@@ -728,7 +730,7 @@ actor AndroidRuntime {
             return (avd, emulator)
         }
         if runningCandidates.count > 1 {
-            throw selectorError("running", runningCandidates.map(\.avd))
+            throw selectorError("running", runningCandidates.compactMap(\.avd))
         }
         guard candidates.count == 1, let avd = candidates.first else {
             throw selectorError("installed", candidates.map(\.name))
@@ -756,12 +758,8 @@ actor AndroidRuntime {
             let identity = try await hostRunner.run(adb(
                 ["-s", serial, "emu", "avd", "name"], sdk: sdk
             ))
-            guard identity.terminationStatus.isSuccess,
-                let avd = androidAVDName(from: identity.standardOutput),
-                !avd.isEmpty
-            else {
-                throw AndroidStateError("running emulator \(serial) has no readable AVD identity")
-            }
+            let avd = identity.terminationStatus.isSuccess
+                ? androidAVDName(from: identity.standardOutput) : nil
             result.append(RunningEmulator(serial: serial, avd: avd, adbState: String(fields[1])))
         }
         return result
@@ -770,19 +768,37 @@ actor AndroidRuntime {
     private func awaitReady(
         avd: String,
         expectedSerial: String?,
+        launcherPID: Int32? = nil,
         product: AndroidBuiltProduct,
         deadline: ContinuousClock.Instant
     ) async throws -> (serial: String, api: Int, abi: String) {
         let sdk = try doctorContext.requiredSDKRoot()
         while true {
-            let running = try await runningEmulators(sdk: sdk).filter { $0.avd == avd }
+            let all = try await runningEmulators(sdk: sdk)
+            let running = all.filter { $0.avd == avd }
+            var ready: (serial: String, api: Int, abi: String)?
             if running.count == 1, let emulator = running.first,
                 expectedSerial == nil || expectedSerial == emulator.serial,
                 emulator.adbState == "device",
-                let ready = try await readyIdentity(serial: emulator.serial, sdk: sdk, product: product)
+                let identity = try await readyIdentity(serial: emulator.serial, sdk: sdk, product: product)
             {
-                return (emulator.serial, ready.api, ready.abi)
+                ready = (emulator.serial, identity.api, identity.abi)
             }
+            // An unreadable Emulator may already hold this AVD; then our launcher exits and the
+            // AVD that later appears is not ours (ADR-0043). Checked after readiness, before accepting.
+            if let launcherPID, try await androidLauncherPresence(launcherPID, runner: hostRunner) == false {
+                let unreadable = all.filter { $0.avd == nil }.map(\.serial)
+                throw DomainError(
+                    summary: "the Emulator launcher for \(avd) exited before the AVD became ready",
+                    observed: unreadable.isEmpty ? nil
+                        : "Emulators with an unreadable AVD name: \(unreadable.joined(separator: ", "))",
+                    remediation: Remediation(
+                        summary: "If another HOME, user or tool runs \(avd), stop it there or select another AVD; "
+                            + "inspect the Emulator log otherwise."
+                    )
+                )
+            }
+            if let ready { return ready }
             guard ContinuousClock.now < deadline else {
                 throw DomainError(
                     summary: "Android Emulator \(avd) did not become ready within \(timeouts.boot)",

@@ -466,6 +466,66 @@ struct AndroidRuntimeTests {
         #expect(state.all.contains { ["avdmanager", "sdkmanager"].contains($0.executable) } == false)
     }
 
+    private func readyResponses(_ serial: String) -> [String: [FakeProcessRunner.Response]] {
+        [
+            command("adb", ["-s", serial, "shell", "getprop", "sys.boot_completed"]): [.ok("1\n")],
+            command("adb", ["-s", serial, "shell", "getprop", "ro.build.version.sdk"]): [.ok("35\n")],
+            command("adb", ["-s", serial, "shell", "getprop", "ro.product.cpu.abilist"]): [.ok("arm64-v8a\n")],
+            command("adb", ["-s", serial, "shell", "pm", "path", "android"]): [.ok("package:/system/framework/framework-res.apk\n")],
+        ]
+    }
+
+    private func runDeviceStage(
+        _ scenario: RuntimeScenario, _ responses: [String: [FakeProcessRunner.Response]]
+    ) async throws -> (AndroidDevice, ScriptedProcessState) {
+        let state = ScriptedProcessState(responses)
+        let runner = ScriptedProcessRunner(state: state)
+        let stages = androidUpStages(anchor: scenario.anchor, doctor: DoctorEngine(checks: []),
+            config: scenario.config, hostRunner: runner, projectRunner: runner,
+            environment: scenario.environment, logs: scenario.logs,
+            timeouts: AndroidRuntimeTimeouts(poll: .zero), note: { _ in })
+        var context = UpContext()
+        context.androidProduct = scenario.product
+        let stage = try #require(stages.first { $0.id == "android.device" })
+        _ = try await stage.run(&context)
+        return (try #require(context.androidProduct?.device), state)
+    }
+
+    @Test("an Emulator whose AVD name cannot be read does not block reusing the target AVD")
+    func unreadableOtherEmulatorKeepsReuse() async throws {
+        let scenario = try runtimeScenario(native: true, abis: [])
+        var responses = readyResponses(serial)
+        responses[command("emulator", ["-list-avds"])] = [.ok("Pixel\n")]
+        responses[command("adb", ["devices"])] = [.ok("List of devices attached\nemulator-5556 device\n\(serial) device\n")]
+        responses[command("adb", ["-s", "emulator-5556", "emu", "avd", "name"])] = [.failed(1, "KO: authentication\n")]
+        responses[command("adb", ["-s", serial, "emu", "avd", "name"])] = [.ok("Pixel\nOK\n")]
+        let (device, _) = try await runDeviceStage(scenario, responses)
+        #expect(device.state == .reused)
+        #expect(device.serial == serial)
+    }
+
+    @Test("a started Emulator is accepted only while its launcher lives beside an unreadable Emulator", arguments: [true, false])
+    func unreadableOtherEmulatorNeedsLiveLauncher(launcherAlive: Bool) async throws {
+        let scenario = try runtimeScenario(native: true, abis: [])
+        let foreign = "List of devices attached\nemulator-5556 device\n"
+        var responses = readyResponses(serial)
+        responses[command("emulator", ["-list-avds"])] = [.ok("Pixel\n")]
+        responses[command("adb", ["devices"])] = [.ok(foreign), .ok(foreign + "\(serial) device\n")]
+        responses[command("adb", ["-s", "emulator-5556", "emu", "avd", "name"])] = [.failed(1, "KO: authentication\n")]
+        responses[command("adb", ["-s", serial, "emu", "avd", "name"])] = [.ok("Pixel\nOK\n")]
+        responses[command("ps", ["-p", "7001", "-o", "pid="])] = [launcherAlive ? .ok("7001\n") : .failed(1, "")]
+        if launcherAlive {
+            let (device, state) = try await runDeviceStage(scenario, responses)
+            #expect(device.state == .started)
+            #expect(device.serial == serial)
+            #expect(state.all.contains { $0.executable == "emulator" && $0.arguments == ["-avd", "Pixel"] })
+        } else {
+            let error = await #expect(throws: DomainError.self) { try await runDeviceStage(scenario, responses) }
+            #expect(error?.summary.contains("launcher") == true)
+            #expect(error?.observed?.contains("emulator-5556") == true)
+        }
+    }
+
     @Test("ADB CRLF does not become part of the Emulator AVD identity")
     func trimsAVDIdentity() {
         #expect(androidAVDName(from: "Pixel\r\nOK\r\n") == "Pixel")
