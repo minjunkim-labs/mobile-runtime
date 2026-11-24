@@ -38,11 +38,16 @@ private final class ScriptedProcessState: @unchecked Sendable {
 private struct ScriptedProcessRunner: ProcessRunner {
     let state: ScriptedProcessState
     var spawnedPID: Int32 = 7001
+    var timingOut: Set<String> = []
 
     func run(
         _ command: ProcessCommand,
         onLine: (@Sendable (String) -> Void)?
     ) async throws -> ProcessResult {
+        if timingOut.contains(command.description) {
+            state.record(command)
+            throw ProcessError.timedOut(command: command.description, timeout: command.timeout ?? .zero)
+        }
         let answer = try state.answer(command)
         if case .streamed = command.output {
             for line in answer.standardOutput.split(separator: "\n") { onLine?(String(line)) }
@@ -464,6 +469,102 @@ struct AndroidRuntimeTests {
         #expect(record.app?.launched == true)
         #expect(record.app?.pid == 8123)
         #expect(state.all.contains { ["avdmanager", "sdkmanager"].contains($0.executable) } == false)
+    }
+
+    private func readyResponses(_ serial: String) -> [String: [FakeProcessRunner.Response]] {
+        [
+            command("adb", ["-s", serial, "shell", "getprop", "sys.boot_completed"]): [.ok("1\n")],
+            command("adb", ["-s", serial, "shell", "getprop", "ro.build.version.sdk"]): [.ok("35\n")],
+            command("adb", ["-s", serial, "shell", "getprop", "ro.product.cpu.abilist"]): [.ok("arm64-v8a\n")],
+            command("adb", ["-s", serial, "shell", "pm", "path", "android"]): [.ok("package:/system/framework/framework-res.apk\n")],
+        ]
+    }
+
+    private func runDeviceStage(
+        _ scenario: RuntimeScenario, _ responses: [String: [FakeProcessRunner.Response]],
+        timingOut: Set<String> = []
+    ) async throws -> (AndroidDevice, ScriptedProcessState) {
+        let state = ScriptedProcessState(responses)
+        let runner = ScriptedProcessRunner(state: state, timingOut: timingOut)
+        let stages = androidUpStages(anchor: scenario.anchor, doctor: DoctorEngine(checks: []),
+            config: scenario.config, hostRunner: runner, projectRunner: runner,
+            environment: scenario.environment, logs: scenario.logs,
+            timeouts: AndroidRuntimeTimeouts(poll: .zero), note: { _ in })
+        var context = UpContext()
+        context.androidProduct = scenario.product
+        let stage = try #require(stages.first { $0.id == "android.device" })
+        _ = try await stage.run(&context)
+        return (try #require(context.androidProduct?.device), state)
+    }
+
+    @Test("an Emulator whose AVD name cannot be read does not block reusing the target AVD")
+    func unreadableOtherEmulatorKeepsReuse() async throws {
+        let scenario = try runtimeScenario(native: true, abis: [])
+        var responses = readyResponses(serial)
+        responses[command("emulator", ["-list-avds"])] = [.ok("Pixel\n")]
+        responses[command("adb", ["devices"])] = [.ok("List of devices attached\nemulator-5556 device\n\(serial) device\n")]
+        responses[command("adb", ["-s", "emulator-5556", "emu", "avd", "name"])] = [.failed(1, "KO: authentication\n")]
+        responses[command("adb", ["-s", serial, "emu", "avd", "name"])] = [.ok("Pixel\nOK\n")]
+        let (device, _) = try await runDeviceStage(scenario, responses)
+        #expect(device.state == .reused)
+        #expect(device.serial == serial)
+    }
+
+    @Test("an Emulator whose console times out does not block reusing the target AVD")
+    func timedOutOtherEmulatorKeepsReuse() async throws {
+        let scenario = try runtimeScenario(native: true, abis: [])
+        var responses = readyResponses(serial)
+        responses[command("emulator", ["-list-avds"])] = [.ok("Pixel\n")]
+        responses[command("adb", ["devices"])] = [.ok("List of devices attached\nemulator-5556 device\n\(serial) device\n")]
+        responses[command("adb", ["-s", serial, "emu", "avd", "name"])] = [.ok("Pixel\nOK\n")]
+        let (device, _) = try await runDeviceStage(
+            scenario, responses, timingOut: [command("adb", ["-s", "emulator-5556", "emu", "avd", "name"])]
+        )
+        #expect(device.state == .reused)
+        #expect(device.serial == serial)
+    }
+
+    @Test("an Emulator unreadable before the launch is not recorded as started once its name reads")
+    func preexistingEmulatorIsNeverStarted() async throws {
+        let scenario = try runtimeScenario(native: true, abis: [])
+        let foreign = "List of devices attached\nemulator-5556 device\n"
+        var responses = readyResponses(serial).merging(readyResponses("emulator-5556")) { a, _ in a }
+        responses[command("emulator", ["-list-avds"])] = [.ok("Pixel\n")]
+        responses[command("adb", ["devices"])] = [.ok(foreign), .ok(foreign), .ok(foreign + "\(serial) device\n")]
+        responses[command("adb", ["-s", "emulator-5556", "emu", "avd", "name"])] = [
+            .failed(1, "error: device offline\n"), .ok("Pixel\nOK\n"),
+        ]
+        responses[command("adb", ["-s", serial, "emu", "avd", "name"])] = [.ok("Pixel\nOK\n")]
+        responses[command("ps", ["-p", "7001", "-o", "pid="])] = [.ok("7001\n")]
+        let (device, _) = try await runDeviceStage(scenario, responses)
+        #expect(device.state == .started)
+        #expect(device.serial == serial)
+    }
+
+    @Test("a started Emulator is accepted only while its launcher lives beside an unreadable Emulator",
+          arguments: ["alive", "exited", "unknown"])
+    func unreadableOtherEmulatorNeedsLiveLauncher(launcher: String) async throws {
+        let launcherAlive = launcher == "alive"
+        let scenario = try runtimeScenario(native: true, abis: [])
+        let foreign = "List of devices attached\nemulator-5556 device\n"
+        var responses = readyResponses(serial)
+        responses[command("emulator", ["-list-avds"])] = [.ok("Pixel\n")]
+        responses[command("adb", ["devices"])] = [.ok(foreign), .ok(foreign + "\(serial) device\n")]
+        responses[command("adb", ["-s", "emulator-5556", "emu", "avd", "name"])] = [.failed(1, "KO: authentication\n")]
+        responses[command("adb", ["-s", serial, "emu", "avd", "name"])] = [.ok("Pixel\nOK\n")]
+        responses[command("ps", ["-p", "7001", "-o", "pid="])] = [
+            ["alive": .ok("7001\n"), "exited": .failed(1, "")][launcher] ?? .failed(1, "ps: Operation not permitted\n"),
+        ]
+        if launcherAlive {
+            let (device, state) = try await runDeviceStage(scenario, responses)
+            #expect(device.state == .started)
+            #expect(device.serial == serial)
+            #expect(state.all.contains { $0.executable == "emulator" && $0.arguments == ["-avd", "Pixel"] })
+        } else {
+            let error = await #expect(throws: DomainError.self) { try await runDeviceStage(scenario, responses) }
+            #expect(error?.summary.contains(launcher == "exited" ? "exited" : "could not be confirmed") == true)
+            #expect(error?.observed?.contains("emulator-5556") == true)
+        }
     }
 
     @Test("ADB CRLF does not become part of the Emulator AVD identity")
