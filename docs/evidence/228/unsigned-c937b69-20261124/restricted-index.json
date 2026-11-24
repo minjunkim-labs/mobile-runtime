@@ -93,8 +93,8 @@
     {
       "id": "bundle-composer",
       "path": "receipts/compose-bundle.py",
-      "bytes": 25245,
-      "sha256": "ef0df44e1f3896ec1ba2e2d46132d0459b7659fafb4b152c21bd8d6f20b77e2f"
+      "bytes": 25438,
+      "sha256": "49ac908d0a158215ce0537bb86690d2944d155b48f79d5a86a88e67b7166a101"
     },
     {
       "id": "f228-raw-fadb68825eb8ebc4",
@@ -1666,7 +1666,7 @@
       "id": "origin-index",
       "path": "ORIGIN-INDEX.json",
       "bytes": 49312,
-      "sha256": "9833ef03d8132558d0b8c6c5b62e51f4cd4ea602d566275837fa9beee8c1101c"
+      "sha256": "3c28c75ad505c8fbe2359bf94ef965e1811b6637c3e3ed7945756f1acbd9ca11"
     }
   ]
 }

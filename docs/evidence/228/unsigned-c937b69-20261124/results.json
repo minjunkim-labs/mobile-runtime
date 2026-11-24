@@ -422,7 +422,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -446,7 +446,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -470,7 +470,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -494,7 +494,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -518,7 +518,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -542,7 +542,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -566,7 +566,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -590,7 +590,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -614,7 +614,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -638,7 +638,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -662,7 +662,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -686,7 +686,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -710,7 +710,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -734,7 +734,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -758,7 +758,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -782,7 +782,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -806,7 +806,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -830,7 +830,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -854,7 +854,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -878,7 +878,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -902,7 +902,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -926,7 +926,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -950,7 +950,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -974,7 +974,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -998,7 +998,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1022,7 +1022,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1046,7 +1046,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1070,7 +1070,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1094,7 +1094,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1118,7 +1118,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1142,7 +1142,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1166,7 +1166,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1190,7 +1190,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1214,7 +1214,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1238,7 +1238,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1262,7 +1262,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1286,7 +1286,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1310,7 +1310,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1334,7 +1334,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1358,7 +1358,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1382,7 +1382,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1406,7 +1406,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1430,7 +1430,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1454,7 +1454,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1478,7 +1478,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1502,7 +1502,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1526,7 +1526,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1550,7 +1550,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1574,7 +1574,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1598,7 +1598,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1622,7 +1622,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 입력에 해당 요구의 관측 증거를 연결한다.",
       "observed": "새 alpha.18의 이 실제 게이트는 아직 검증하지 않았다. 이전 후보와 개발 검증 결과를 승계하지 않는다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:24:13Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [
@@ -1646,7 +1646,7 @@
       "evidenceClass": "actual",
       "expected": "고정한 새 후보와 모든 tuple의 입력을 연결한다.",
       "observed": "단일 release build의 CLI·GUI·Core와 배포 파일을 고정했다. CLI·GUI 버전이 같고 공통 metadata·resource bytes가 같으며 GUI bundle에 CLI가 없다. 네이티브 Android 입력 4개(새 입력 세트)만 이 후보에 연결했다. alpha.17까지 재사용한 고정 입력 24개는 디스크에 없어 다시 감사하지 못했다.",
-      "observedAt": "2026-11-24T13:34:33Z",
+      "observedAt": "2026-11-24T12:34:32Z",
       "executor": "claude-native-android-alpha18",
       "result": "unverified",
       "evidence": [

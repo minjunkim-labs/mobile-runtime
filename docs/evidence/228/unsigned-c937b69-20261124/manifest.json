@@ -36,11 +36,11 @@
     },
     "results": {
       "path": "results.json",
-      "sha256": "18e25d94ee8c79465ad7f44267e05d3ae9d89894fd3e1d7060a0bf3a2b1e33db"
+      "sha256": "d266724dd4bce3a1b953d731f4b73c204b39058d0b826e11c1d0bddf26765646"
     },
     "restrictedIndex": {
       "path": "restricted-index.json",
-      "sha256": "8e0a43f7e43f88d8f7bf69ee7807bff83dea1ea1f04933a864e9238d9a8480cb"
+      "sha256": "812b86038d52160e28f25b369c5950c23efa6d80f5914a5cb43dcc67334a19ea"
     },
     "report": {
       "path": "report.md",
