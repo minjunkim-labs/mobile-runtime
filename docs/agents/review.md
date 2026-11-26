@@ -48,7 +48,7 @@ source-only 테스트는 `test_*.py`를 자동 탐색한다. AST 검사는 정�
 ## PR 본문과 병합
 
 `.github/pull_request_template.md`의 Summary, Evidence, Merge Danger, Review를 사용한다.
-`등급(review-preflight):`에는 `python3 -I .baseline/baseline.py review-preflight`가 출력한 등급(문서, 쉬움, 어려움)을 쓴다. 리뷰어는 등급을 올릴 수만 있다. `민감한 파일:`에는 `없음` 또는 건드린 경로를 쓴다. 기준은 repo-baseline `POLICY.md` §3·§4와 `REVIEW.md`다. 애매하면 어려움이다.
+`등급(review-preflight):`에는 `python3 -I .baseline/baseline.py review-preflight <PR 번호나 URL>`이 출력한 등급(문서, 쉬움, 어려움)을 쓴다. 리뷰어는 등급을 올릴 수만 있다. `민감한 파일:`에는 `없음` 또는 건드린 경로를 쓴다. 기준은 repo-baseline `POLICY.md` §3·§4와 `REVIEW.md`다. 애매하면 어려움이다.
 Summary에는 변경 흐름을 보여주는 작은 도식을 둔다. Evidence에는 실제 명령과 결과를 둔다.
 문서 변경이면 기존 규칙과 새 규칙을 비교한다. 실행하지 않은 검사를 성공으로 기록하지 않는다.
 
