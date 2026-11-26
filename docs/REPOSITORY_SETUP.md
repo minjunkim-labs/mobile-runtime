@@ -25,7 +25,7 @@ CodeQL workflow는 경로와 active 상태만 본다. 분석 job이 빠져도 `N
 | Allow auto-merge | Off. 병합은 리뷰한 head SHA를 지정해 머지 큐에 넣는다 |
 | main 보호 | PR 필수·관리자 적용·선형 이력·대화 해결 On. `strict`는 끈다(머지 큐가 최신 base와 합쳐 다시 검사한다) |
 | 승인 | GitHub 0명. 병합은 `AGENTS.md`의 병합 줄을 따른다. 되돌리기 어려움은 사람이 diff를 읽은 head에서 병합 |
-| 필수 체크 | 판정 job `ci` 하나(GitHub Actions App `15368`). 값은 repo-baseline `templates/github/README.md` 「계약 값」을 따른다 |
+| 필수 체크 | 판정 job `ci` 하나(GitHub Actions App `15368`). 값은 repo-baseline `github/README.md` 「저장소 설정 파일」을 따른다 |
 | 머지 큐 | ruleset `merge-queue`: `main`, squash, `ALLGREEN`. `ci`는 `merge_group`에서도 돈다 |
 | force push·main 삭제 | Off |
 | Actions | GitHub 공식만, 전체 SHA 필수, 기본 token read, PR 생성·승인 Off |
@@ -68,6 +68,8 @@ Copilot MCP tools·PR 승인과 추가 자동 AI 리뷰를 켜지 않는다. Cha
 2026-11-15에 repo-baseline main `47a21a3`으로 판을 올렸다(`docs/start.md` 「판 올리기」, `CHANGELOG.md`의 `513ac5d` 뒤 항목). `AGENTS.md`·`REVIEW.md`는 바뀐 줄만 합쳤다. PR 양식의 `Door:`·`신뢰 경계:` 줄은 `되돌리기:`·`민감한 파일:`이 됐다. 이 저장소에는 PR 본문 검사기가 없으므로 검사기는 복사하지 않았다.
 
 2026-11-16에 저장소를 `minjunkim-dev`에서 조직 `minjunkim-labs`로 옮기고 repo-baseline `8551f36`의 머지 큐를 받았다. 머지 큐 ruleset은 조직이 소유한 공개 저장소에서만 쓸 수 있다. `repository-settings.json`에 `merge-queue` ruleset을, `ci.yml`에 `merge_group`을 더했다. 옮긴 뒤 꺼진 secret scanning·push protection은 이 PR이 병합된 뒤 소유자가 `apply_github_settings.py --apply`로 다시 켠다.
+
+2026-11-26에 repo-baseline v2.1.0 코어로 옮겼다([repo-baseline#194](https://github.com/minjunkim-labs/repo-baseline/issues/194)). `migrate --apply`가 `.baseline/`(고정한 `baseline.py`, `baseline.json`, `commands.json`), `.claude/hooks/`, `.claude/skills/`, `CLAUDE.md`, `.mise.toml`, 관리 블록을 썼다. 옛 manifest `.github/repo-baseline.json`과 Matt 스킬 플러그인 설정을 지웠다(v2 코어가 스킬을 저장소에 넣는다). `ci.yml`은 v2 `github/ci.yml`의 단계(mise, `baseline.py run setup`·`check`·`budget`·`run check`·`run test`)를 macOS job에 쓰고, 판정 job `ci`와 `CI`는 그대로 둔다. 저장소 설정은 `python3 -I .baseline/baseline.py github plan`·`apply`로 소유자가 맞춘다. Actions 허용 목록의 `jdx/mise-action@*`도 그때 들어간다.
 
 2026-11-16에 repo-baseline `e9d5baa`의 계약으로 옮겼다. `repository-settings.json`에는 저장소마다 다른 값(저장소 이름·ID, 필수 체크 `ci`, `patterns_allowed`, CodeQL advanced setup)만 남기고 공통값은 repo-baseline 템플릿에서 받는다. `ci.yml`에 판정 job `ci`를 더했다. 옛 판정 job `CI`는 release 근거(`scripts/verify-release-evidence.py`)가 그 이름을 찾으므로 세부 job으로 남긴다. 소유자가 apply하기 전까지 서버의 필수 체크는 `CI`이고 `strict`는 true다.
 

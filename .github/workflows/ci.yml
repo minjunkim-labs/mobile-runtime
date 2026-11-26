@@ -43,11 +43,6 @@ jobs:
           grep -Fq 'Version 2.0, January 2004' LICENSE
           grep -Eq 'Copyright [0-9]{4} MINJUN KIM' README.md
           grep -Fq 'SPDX-License-Identifier: Apache-2.0' README.md
-      - name: Verify source-only ADB contracts
-        run: |
-          python3 -B -m unittest discover -s scripts/source-only -p 'test_*.py' -v
-      - name: Verify Draft Release input guards
-        run: python3 -B scripts/test-release-input.py -v
       - name: Validate workflows and shell scripts
         run: |
           curl --fail --silent --show-error --location \
@@ -58,14 +53,17 @@ jobs:
           "$RUNNER_TEMP/actionlint"
           git ls-files -z '*.sh' | xargs -0 -r shellcheck
 
-  macos-swift-tests:
-    name: macOS Swift build and tests
+  # repo-baseline v2 github/ci.yml의 단계다. 사람·훅·클라우드와 같은 .baseline/baseline.py 명령을 돈다.
+  # Swift는 Apple 프레임워크가 있어 macOS에서만 테스트한다. Linux는 아래 linux-core-compile이 Core를 컴파일한다.
+  test:
+    name: test (macos-26)
     runs-on: macos-26
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
       - name: Record toolchain fingerprint
         id: toolchain
         run: |
@@ -81,7 +79,7 @@ jobs:
         if: env.CACHE_ENABLED == 'true'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ${{ runner.temp }}/swiftpm
+          path: ~/Library/Caches/org.swift.swiftpm
           key: ${{ env.CACHE_VERSION }}-swiftpm-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.fingerprint }}-${{ hashFiles('Package.resolved') }}
       - name: Restore matching build outputs
         id: build-cache
@@ -90,10 +88,19 @@ jobs:
         with:
           path: .build
           key: ${{ env.CACHE_VERSION }}-build-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.fingerprint }}-${{ hashFiles('Package.resolved') }}-${{ hashFiles('Package.swift', 'Sources/**', 'Tests/**', 'scripts/**', '.github/workflows/ci.yml') }}
-      - name: Build and test locked dependencies
+      - name: run setup
+        run: python3 -I .baseline/baseline.py run setup
+      - name: baseline check
+        run: python3 -I .baseline/baseline.py check
+      - name: baseline budget
+        run: python3 -I .baseline/baseline.py budget
+      - name: run check
+        run: python3 -I .baseline/baseline.py run check
+      - name: run test
+        run: python3 -I .baseline/baseline.py run test
+      - name: Verify CLI inputs and locked dependencies
         run: |
-          swift build --force-resolved-versions --cache-path "$RUNNER_TEMP/swiftpm" -Xswiftc -warnings-as-errors
-          swift test --force-resolved-versions --cache-path "$RUNNER_TEMP/swiftpm" -Xswiftc -warnings-as-errors
+          python3 -I .baseline/baseline.py run build
           python3 scripts/verify-doctor-input.py "$(swift build --show-bin-path)/mobile"
           python3 scripts/verify-workflow-input.py "$(swift build --show-bin-path)/mobile"
           python3 scripts/verify-setup-input.py "$(swift build --show-bin-path)/mobile"
@@ -168,14 +175,14 @@ jobs:
   ci:
     name: CI
     if: always()
-    needs: [repository-hygiene, macos-swift-tests, macos-release-package, linux-core-compile]
+    needs: [repository-hygiene, test, macos-release-package, linux-core-compile]
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
       - name: Require every gate to succeed
         env:
           HYGIENE_RESULT: ${{ needs.repository-hygiene.result }}
-          MACOS_RESULT: ${{ needs.macos-swift-tests.result }}
+          MACOS_RESULT: ${{ needs.test.result }}
           PACKAGE_RESULT: ${{ needs.macos-release-package.result }}
           LINUX_RESULT: ${{ needs.linux-core-compile.result }}
         run: |
@@ -185,12 +192,12 @@ jobs:
             test "$result" = success
           done
 
-  # 필수 체크 계약(repo-baseline templates/github/README.md): 판정 job 하나, 이름 `ci`.
+  # 필수 체크 계약(repo-baseline github/README.md): 판정 job 하나, 이름 `ci`.
   # 위 `CI`는 옛 필수 체크이자 release 근거가 찾는 이름이라 그대로 둔다.
   gate:
     name: ci
     if: always()
-    needs: [repository-hygiene, macos-swift-tests, macos-release-package, linux-core-compile, ci]
+    needs: [repository-hygiene, test, macos-release-package, linux-core-compile, ci]
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:

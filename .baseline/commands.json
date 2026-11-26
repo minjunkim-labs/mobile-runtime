@@ -1,0 +1,27 @@
+{
+  "build": [
+    "swift",
+    "build",
+    "--force-resolved-versions",
+    "-Xswiftc",
+    "-warnings-as-errors"
+  ],
+  "check": [
+    "sh",
+    "-c",
+    "python3 -B -m unittest discover -s scripts/source-only -p \"test_*.py\" && python3 -B scripts/test-release-input.py"
+  ],
+  "setup": [
+    "swift",
+    "package",
+    "resolve",
+    "--force-resolved-versions"
+  ],
+  "test": [
+    "swift",
+    "test",
+    "--force-resolved-versions",
+    "-Xswiftc",
+    "-warnings-as-errors"
+  ]
+}

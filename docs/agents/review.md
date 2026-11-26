@@ -23,8 +23,8 @@ CI 성공은 티켓의 실제 측정이나 독립 리뷰를 대체하지 않는�
 
 | 검사 | 확인하는 것 | 확인하지 않는 것 |
 | --- | --- | --- |
-| Repository hygiene | 라이선스, workflow, shell, source-only 합성 테스트 | 실제 ADB 자원과 provenance |
-| macOS Swift build and tests | 잠근 의존성, 경고 없는 빌드, Swift 동작, 실제 CLI 입력 계약 | 실제 모바일 첫 화면과 release 승인 |
+| Repository hygiene | 라이선스, workflow, shell | 실제 ADB 자원과 provenance |
+| test (macos-26) | `baseline.py check`·`budget`, source-only 합성 테스트(`run check`), 잠근 의존성, 경고 없는 빌드, Swift 동작, 실제 CLI 입력 계약 | 실제 모바일 첫 화면과 release 승인 |
 | macOS release package verification | 별도 disposable build와 배포 archive의 리소스 독립성 | 공개 배포와 release 승인 |
 | Linux Core compile | Apple 프레임워크 없는 Core 컴파일 | Linux 제품 지원 |
 
@@ -47,18 +47,18 @@ source-only 테스트는 `test_*.py`를 자동 탐색한다. AST 검사는 정�
 
 ## PR 본문과 병합
 
-`.github/pull_request_template.md`의 Author, Summary, Evidence, Merge Danger, Review를 사용한다.
-`되돌리기:`는 `쉬움` 또는 `어려움`만 쓴다. `민감한 파일:`에는 `없음` 또는 건드린 `REVIEW.md` 「민감한 파일」 경로를 쓴다. 기준은 repo-baseline `POLICY.md` §4다. 애매하면 되돌리기 어려움이다.
+`.github/pull_request_template.md`의 Summary, Evidence, Merge Danger, Review를 사용한다.
+`등급(review-preflight):`에는 `python3 -I .baseline/baseline.py review-preflight`가 출력한 등급(문서, 쉬움, 어려움)을 쓴다. 리뷰어는 등급을 올릴 수만 있다. `민감한 파일:`에는 `없음` 또는 건드린 경로를 쓴다. 기준은 repo-baseline `POLICY.md` §3·§4와 `REVIEW.md`다. 애매하면 어려움이다.
 Summary에는 변경 흐름을 보여주는 작은 도식을 둔다. Evidence에는 실제 명령과 결과를 둔다.
 문서 변경이면 기존 규칙과 새 규칙을 비교한다. 실행하지 않은 검사를 성공으로 기록하지 않는다.
 
-- 병합 조건은 `AGENTS.md` 「하지 않는 것」의 병합 줄을 따른다. 병합은 리뷰한 head SHA를 지정해 PR을 머지 큐에 넣는 것이다(repo-baseline `POLICY.md` §5의 `enqueuePullRequest`). `gh pr merge`와 큐 우회는 쓰지 않는다. 자동 병합은 쓰지 않는다(`allow_auto_merge: false`). 큐가 base와 합친 결과에서 필수 `ci`를 다시 돌리므로 PR 브랜치에 base를 합치지 않는다.
-- 되돌리기 어려운 데이터 변경, 외부 대량 발송, 파괴적인 정리, 권한 확대, 민감한 파일(`REVIEW.md`) 경로는 되돌리기 어려움으로 처리한다. 사람이 최종 head와 영향 범위를 읽고 그 head에서 병합한다. 그 뒤 push가 있으면 다시 읽는다. 병합할 때 읽은 head SHA를 `expectedHeadOid`로 지정해 머지 큐에 넣는다.
+- 병합 조건은 repo-baseline `POLICY.md` §5와 `AGENTS.md` 「병합」을 따른다. 문서·쉬움 PR은 `python3 -I .baseline/baseline.py enqueue <PR> <리뷰한 head>`로 머지 큐에 넣는다. `enqueue`는 어려움 PR을 넣지 않는다. `gh pr merge`와 큐 우회는 쓰지 않는다. 자동 병합은 쓰지 않는다(`allow_auto_merge: false`). 큐가 base와 합친 결과에서 필수 `ci`를 다시 돌리므로 PR 브랜치에 base를 합치지 않는다.
+- 되돌리기 어려운 데이터 변경, 외부 대량 발송, 파괴적인 정리, 권한 확대, 민감한 파일(`REVIEW.md`) 경로는 어려움으로 처리한다. 사람이 최종 head와 영향 범위를 읽고 그 head에서 병합한다. 그 뒤 push가 있으면 다시 읽는다. 병합할 때 읽은 head SHA를 `expectedHeadOid`로 지정해 머지 큐에 넣는다.
 - 많은 프로젝트의 실행 동작이나 공개 계약을 바꾸는 변경은 broad로 PR에 적는다. diff 크기로 위험을 결정하지 않는다.
 - 사람 판단이 필요한 PR은 `ready-for-human`으로 표시한다.
 - 리뷰 이후 커밋이나 base가 바뀌면 영향받는 검증을 갱신한다.
 
 ## 회고
 
-사용자가 요청할 때만 한다. 매 PR·정기 자동 회고는 만들지 않는다. repo-baseline `prompts/retro.md` 또는 설치된 `mattpocock-skills:retro` 원문을 따른다.
+사용자가 요청할 때만 한다. 매 PR·정기 자동 회고는 만들지 않는다. repo-baseline `prompts/retro.md`를 따른다.
 같은 지적이 두 번 나오면 린트·검사 > `REVIEW.md` 한 줄 > `AGENTS.md` 길잡이 순서로 옮긴다. 사용자가 고른 개선만 반영한다.
