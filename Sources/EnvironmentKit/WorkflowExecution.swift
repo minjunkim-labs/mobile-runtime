@@ -368,15 +368,15 @@ public enum WorkflowExecution {
                     operation.remaining.append("The recorded Flutter app may remain installed or running. Run mobile down --platform ios for this project.")
                 }
             }
-            // Without a built product no runtime stage ran, so the device is as this up found it (#373).
-            // A device stage that never handed over a device, whose owned Emulator the rollback confirmed
-            // absent (e.g. a launcher that ended before any serial was recorded), changed nothing here (#417).
-            if platform == .android, let reservation, let report = up, leftNothingOnDevice(report.context.androidProduct) {
-                do {
-                    try leases.restoreAfterRejectedInstallation(reservation,
-                        settlingEarlierUnconfirmed: rollbackSettledRecord(report.context))
-                } catch {
-                    operation.remaining.append("The device reservation was preserved: \(error)")
+            if platform == .android, let reservation, let report = up {
+                let restore = reservationRestore(report.context)
+                if restore != .keep {
+                    do {
+                        try leases.restoreAfterRejectedInstallation(reservation,
+                            settlingEarlierUnconfirmed: restore == .settleEarlierUnconfirmed)
+                    } catch {
+                        operation.remaining.append("The device reservation was preserved: \(error)")
+                    }
                 }
             }
             // The app outlives this lease, even after a later stage failed. The next run observes it again.
@@ -506,24 +506,31 @@ public enum WorkflowExecution {
         return config
     }
 
-    /// True when this up changed nothing on its device: no product was built, or the device stage
-    /// handed over no device and the rollback confirmed that its owned Emulator is absent.
-    private static func leftNothingOnDevice(_ product: AndroidBuiltProduct?) -> Bool {
-        guard let product else { return true }
-        let confirmedAbsent = product.rollback?.contains {
-            $0.id == "android.emulator" && $0.ownedRuntimeStopped == true
-        } == true
-        return product.device == nil && confirmedAbsent
+    /// What a failed Android up does with the reservation it replaced.
+    private enum ReservationRestore {
+        /// The device may have changed, so the reservation stays unconfirmed.
+        case keep
+        /// The device is as this up found it: put the earlier reservation back.
+        case restore
+        /// As `restore`, but an earlier reservation without a claim is dropped (#421).
+        case settleEarlierUnconfirmed
     }
 
-    /// True when this up's rollback proved its recorded owned Emulator absent and settled the whole
-    /// active-run record. A later down then has no recorded device to find an earlier unconfirmed
-    /// reservation of this project by, so the rollback settles it too (#421).
-    private static func rollbackSettledRecord(_ context: UpContext) -> Bool {
-        guard let product = context.androidProduct, product.device == nil,
-              product.rollback?.contains(where: { $0.id == "android.emulator" && $0.ownedRuntimeStopped == true }) == true
-        else { return false }
-        return context.androidRollbackExitCode == 0 && !context.androidRequiresTeardown
+    private static func reservationRestore(_ context: UpContext) -> ReservationRestore {
+        // Without a built product no runtime stage ran, so the device is as this up found it (#373).
+        guard let product = context.androidProduct else { return .restore }
+        // A device stage that never handed over a device, whose owned Emulator the rollback confirmed
+        // absent (e.g. a launcher that ended before any serial was recorded), changed nothing (#417).
+        let rollback = product.rollback ?? []
+        guard product.device == nil,
+              rollback.contains(where: { $0.id == "android.emulator" && $0.ownedRuntimeStopped == true })
+        else { return .keep }
+        // If the rollback also settled the whole record, a later down has no recorded device to find an
+        // earlier unconfirmed reservation of this project by, so it is settled here too. That takes every
+        // rollback item stopped or skipped, as a passing down does (#421).
+        let settled = !context.androidRequiresTeardown
+            && rollback.allSatisfy { $0.status == .stopped || $0.status == .skipped }
+        return settled ? .settleEarlierUnconfirmed : .restore
     }
 
     private static func claim(_ context: UpContext, device: ResourceKey, platform: ProjectPlatform, owner: LeaseOwner) -> ResourceClaim? {
