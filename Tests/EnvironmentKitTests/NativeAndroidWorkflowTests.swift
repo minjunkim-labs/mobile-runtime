@@ -464,7 +464,11 @@ struct NativeAndroidWorkflowTests {
         var device = try #require(record.device)
         device.state = scenario == .reused ? .reused : .started
         device.launcherPID = scenario == .missingPID ? nil : 4242
-        if scenario == .missingSerialExited || scenario == .missingSerialAlive { device.serial = nil }
+        if scenario == .missingSerialExited || scenario == .missingSerialAlive {
+            // The serial is recorded only once the Emulator is ready, before any app is installed.
+            device.serial = nil
+            record.app = nil
+        }
         record.device = device
         try store.write(record)
 
