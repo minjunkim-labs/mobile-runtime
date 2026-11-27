@@ -31,3 +31,7 @@ claim은 이 프로젝트의 Runstir 실행이 그 기기에 남긴 앱을 뜻�
 `up`이 띄운 launcher가 준비 전에 끝나면 active-run 기록에 serial 없이 launcher PID와 `started`만 남는다. serial은 Emulator가 준비된 뒤에 기록하므로, 이 기록에서 소유한 Emulator가 있었다고 볼 근거는 PID뿐이다. `down`과 `up`의 rollback은 그 PID를 `ps -p`로 본다. PID가 없으면 소유한 Emulator는 존재하지 않는다. 이 항목은 `skipped`이고 `ownedRuntimeStopped`는 true다. 기록의 기기를 지운다. 살아 있는 PID나 확인하지 못한 관측은 지금처럼 `unknown`으로 보존한다. 어느 쪽에서도 신호를 보내지 않는다. 재사용된 PID는 살아 있는 것으로 보이므로 보존하는 쪽으로만 틀린다.
 
 `up`이 빌드된 제품은 있으나 기기 단계가 기기를 넘기지 못했고, rollback이 소유한 Emulator의 부재를 확인했다면 이 `up`은 기기에 아무것도 남기지 않았다. 설치도 새 claim도 없다. 이때 `up`은 대체한 reservation을 위 규칙대로 되돌린다. 이전 claim이 있으면 그것을 다시 쓴다. serial 없이 끝난 launcher가 대표 경우이고, 기록된 소유 Emulator가 이미 꺼져 있던 경우도 같다. 그 밖에 기기에 닿은 뒤의 실패가 남긴 claim 없는 reservation은 그대로 보존한다.
+
+### 앞선 확인 불가가 남긴 reservation (#421)
+
+앞선 `up`이나 `down`이 `ps`를 확인하지 못해 claim 없는 reservation과 기록을 보존했고, 같은 프로젝트의 다음 `up`이 그 기록 때문에 기기 단계에서 실패한 뒤 rollback이 launcher 부재를 확인하면 기록이 지워진다. 이때 되돌릴 "이전" reservation이 그 claim 없는 것이면 다시 쓰지 않고 지운다. 기록이 사라진 뒤에는 `down`이 기기를 찾지 못하고 `leases.claims`도 claim 없는 reservation을 나열하지 않아 풀 방법이 없기 때문이다. 조건은 rollback이 소유 Emulator의 부재를 확인했고, 기록 전체를 정리했고(`androidRequiresTeardown`이 false), 종료 코드가 0일 때뿐이다. 이전 claim은 이 경우에도 다시 쓴다. 기기를 찾는 `leases.claims` 경로가 남아 있기 때문이다.

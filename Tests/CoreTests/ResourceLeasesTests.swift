@@ -213,6 +213,33 @@ struct ResourceLeasesTests {
         }
     }
 
+    @Test("an earlier unconfirmed reservation is settled only when asked, and an earlier app claim never is (#421)",
+          arguments: [(false, false), (true, false), (false, true), (true, true)])
+    func settleEarlierUnconfirmedReservation(claimed: Bool, settling: Bool) async throws {
+        let leases = store()
+        let device = ResourceKey.device(.android, "avd:Pixel")
+        let prior = owner("prior")
+        let claim = ResourceClaim(device: device, platform: .android, handle: "emulator-5554", appID: "com.first", owner: prior)
+        if claimed { try leases.record(claim) } else { try leases.reserve(device: device, owner: prior) }
+        let lease = try leases.acquire([device], owner: owner("install"))
+        defer { lease.release() }
+        let saved = try leases.reserveForInstallation(device: device, owner: owner("install"))
+        try leases.restoreAfterRejectedInstallation(saved, settlingEarlierUnconfirmed: settling)
+        let kept = claimed || !settling
+        #expect(FileManager.default.fileExists(atPath: leases.file(device, "claim").path) == kept)
+        // Whatever was kept still guards the device. A settled one no longer refuses another project.
+        if kept {
+            await #expect(throws: ResourceConflict.self) {
+                try await leases.check(device: device, project: "/other") { _ in .running("pid 7") }
+            }
+        } else {
+            try await leases.check(device: device, project: "/other") { _ in
+                Issue.record("a settled reservation must not guard the device")
+                return .running("pid 7")
+            }
+        }
+    }
+
     @Test("restoration preserves changed, confirmed, unreadable or missing records and another store",
           arguments: ["other-operation", "confirmed", "malformed", "missing", "other-store"])
     func preserveChangedReservation(_ mode: String) throws {

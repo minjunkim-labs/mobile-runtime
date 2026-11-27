@@ -246,7 +246,11 @@ extension ResourceLeases {
     }
 
     /// Only a verified no-change rejection permits restoring the state before this install.
-    public func restoreAfterRejectedInstallation(_ saved: InstallationReservation) throws {
+    /// An earlier reservation without a claim was this project's unconfirmed one. It is restored too,
+    /// unless `settlingEarlierUnconfirmed` says this run proved that unconfirmed state gone and left
+    /// nothing for a later down to find it by (#421). An earlier app claim is always restored.
+    public func restoreAfterRejectedInstallation(_ saved: InstallationReservation,
+                                                 settlingEarlierUnconfirmed: Bool = false) throws {
         guard directory == saved.directory else {
             throw ResourceConflict(key: saved.device, owner: nil, reason: "the reservation belongs to a different store")
         }
@@ -255,8 +259,9 @@ extension ResourceLeases {
             throw ResourceConflict(key: saved.device, owner: current?.owner,
                 reason: "the installation reservation changed and was preserved")
         }
-        if let previous = saved.previous { try write(previous, device: saved.device) }
-        else { try FileManager.default.removeItem(at: file(saved.device, "claim")) }
+        if let previous = saved.previous, previous.claim != nil || !settlingEarlierUnconfirmed {
+            try write(previous, device: saved.device)
+        } else { try FileManager.default.removeItem(at: file(saved.device, "claim")) }
     }
 
     public func record(_ claim: ResourceClaim) throws {

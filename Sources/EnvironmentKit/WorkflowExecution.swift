@@ -373,7 +373,8 @@ public enum WorkflowExecution {
             // absent (e.g. a launcher that ended before any serial was recorded), changed nothing here (#417).
             if platform == .android, let reservation, let report = up, leftNothingOnDevice(report.context.androidProduct) {
                 do {
-                    try leases.restoreAfterRejectedInstallation(reservation)
+                    try leases.restoreAfterRejectedInstallation(reservation,
+                        settlingEarlierUnconfirmed: rollbackSettledRecord(report.context))
                 } catch {
                     operation.remaining.append("The device reservation was preserved: \(error)")
                 }
@@ -513,6 +514,16 @@ public enum WorkflowExecution {
             $0.id == "android.emulator" && $0.ownedRuntimeStopped == true
         } == true
         return product.device == nil && confirmedAbsent
+    }
+
+    /// True when this up's rollback proved its recorded owned Emulator absent and settled the whole
+    /// active-run record. A later down then has no recorded device to find an earlier unconfirmed
+    /// reservation of this project by, so the rollback settles it too (#421).
+    private static func rollbackSettledRecord(_ context: UpContext) -> Bool {
+        guard let product = context.androidProduct, product.device == nil,
+              product.rollback?.contains(where: { $0.id == "android.emulator" && $0.ownedRuntimeStopped == true }) == true
+        else { return false }
+        return context.androidRollbackExitCode == 0 && !context.androidRequiresTeardown
     }
 
     private static func claim(_ context: UpContext, device: ResourceKey, platform: ProjectPlatform, owner: LeaseOwner) -> ResourceClaim? {
