@@ -464,7 +464,11 @@ struct NativeAndroidWorkflowTests {
         var device = try #require(record.device)
         device.state = scenario == .reused ? .reused : .started
         device.launcherPID = scenario == .missingPID ? nil : 4242
-        if scenario == .missingSerial { device.serial = nil }
+        if scenario == .missingSerialExited || scenario == .missingSerialAlive {
+            // The serial is recorded only once the Emulator is ready, before any app is installed.
+            device.serial = nil
+            record.app = nil
+        }
         record.device = device
         try store.write(record)
 
@@ -472,7 +476,7 @@ struct NativeAndroidWorkflowTests {
         cleanup.responses["adb devices"] = .ok("List of devices attached\n")
         let denied = scenario == .permissionDenied ? "Operation not permitted" : ""
         cleanup.responses["kill -0 4242"] = .failed(1, denied)
-        cleanup.responses["ps -p 4242 -o pid="] = .failed(1, denied)
+        cleanup.responses["ps -p 4242 -o pid="] = scenario == .missingSerialAlive ? .ok("4242\n") : .failed(1, denied)
         if scenario == .queryFailure {
             cleanup.failures["ps -p 4242 -o pid="] = FixtureMiss(command: "owned launcher observation")
         }
@@ -480,7 +484,8 @@ struct NativeAndroidWorkflowTests {
             runner: cleanup, leases: fixture.leases)
         let emulator = try #require(down.down?.items.first { $0.id == "android.emulator" })
         let key = ResourceKey.device(.android, "avd:Pixel")
-        if scenario == .ownedAbsent {
+        // A launcher that exited before its serial was recorded left no Emulator either (#417).
+        if scenario == .ownedAbsent || scenario == .missingSerialExited {
             #expect(down.down?.status == .pass)
             #expect(emulator.status == .skipped)
             #expect(emulator.ownedRuntimeStopped == true)
@@ -501,6 +506,46 @@ struct NativeAndroidWorkflowTests {
         }
         #expect(!cleanup.log.all.contains { $0.arguments.contains("kill") || $0.arguments.contains("-TERM") })
         #expect(!cleanup.log.all.contains { $0.description == "kill -0 4242" })
+        try fixture.assertPreserved()
+    }
+
+    @Test("an up whose launcher ends before the AVD is ready leaves no recorded device or reservation (#417)",
+          arguments: [false, true])
+    func launcherEndedBeforeReady(unconfirmed: Bool) async throws {
+        let fixture = try NativeAndroidFixture()
+        var runner = try fixture.runner()
+        // Another HOME's Emulator holds the AVD and cannot be read, so the launcher Runstir starts ends at once.
+        runner.responses["adb devices"] = .ok("List of devices attached\nemulator-5556 device\n")
+        runner.responses["adb -s emulator-5556 emu avd name"] = .failed(1, "KO: authentication\n")
+        runner.responses["ps -p 4242 -o pid="] = unconfirmed ? .failed(1, "ps: Operation not permitted\n") : .failed(1, "")
+        let up = await WorkflowExecution.run(.up, input: fixture.workflowInput, runner: runner, leases: fixture.leases)
+        #expect(up.exitCode != 0)
+        let message = up.up?.failure?.message ?? ""
+        #expect(message.contains(unconfirmed ? "could not be confirmed" : "exited before"), Comment(rawValue: message))
+
+        let store = AndroidActiveRunStore(project: fixture.project, logs: RunLogs(project: fixture.project))
+        let key = ResourceKey.device(.android, "avd:Pixel")
+        if unconfirmed {
+            // An unconfirmed absence keeps the record and the reservation, as before.
+            #expect(try store.read()?.device?.launcherPID == 4242)
+            await #expect(throws: ResourceConflict.self) {
+                try await fixture.leases.check(device: key, project: "/next-project") { _ in
+                    .unknown("the launcher absence is not confirmed")
+                }
+            }
+        } else {
+            #expect(try store.read()?.device == nil)
+            // The next up of another project is not refused by the failed one's reservation.
+            try await fixture.leases.check(device: key, project: "/next-project") { _ in
+                Issue.record("a launcher that never became an Emulator must not keep the device reserved")
+                return .unknown("the failed up's reservation remains")
+            }
+            // Nor is this project's own next up, once the AVD is readable again.
+            let again = await WorkflowExecution.run(.up, input: fixture.workflowInput,
+                runner: try fixture.runner(), leases: fixture.leases)
+            #expect(again.exitCode == 0, Comment(rawValue: again.up?.failure?.message ?? ""))
+        }
+        #expect(!runner.log.all.contains { $0.arguments.contains("kill") || $0.arguments.contains("-TERM") })
         try fixture.assertPreserved()
     }
 
@@ -644,7 +689,7 @@ struct NativeAndroidWorkflowTests {
 }
 
 private enum AlreadyStoppedRuntimeCase: CaseIterable, Sendable {
-    case ownedAbsent, reused, missingPID, missingSerial, permissionDenied, queryFailure
+    case ownedAbsent, reused, missingPID, missingSerialExited, missingSerialAlive, permissionDenied, queryFailure
 }
 
 private enum UnconfirmedStopCase: CaseIterable, Sendable {

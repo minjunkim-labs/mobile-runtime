@@ -681,6 +681,50 @@ struct AndroidRuntimeTests {
         #expect(cleanup.hasRemainingRecord == false)
     }
 
+    @Test("down settles a launcher that ended before its Emulator had a serial and keeps one that is alive",
+          arguments: ["exited", "alive", "unknown"])
+    func cleanupAfterLauncherEndedBeforeSerial(launcher: String) async throws {
+        let scenario = try runtimeScenario()
+        let store = AndroidActiveRunStore(project: scenario.repo.root, logs: scenario.logs)
+        var record = AndroidActiveRun(project: scenario.repo.root, product: scenario.product)
+        record.device = .init(
+            avd: "Pixel", launcherPID: 7001, serial: nil, api: nil, abi: nil, state: .started
+        )
+        try store.write(record)
+        let presence: FakeProcessRunner.Response = switch launcher {
+        case "exited": .failed(1, "")
+        case "alive": .ok("7001\n")
+        default: .failed(1, "ps: Operation not permitted\n")
+        }
+        let state = ScriptedProcessState([command("ps", ["-p", "7001", "-o", "pid="]): [presence]])
+        let runner = ScriptedProcessRunner(state: state)
+
+        let cleanup = await AndroidCleanup(
+            anchor: scenario.anchor,
+            config: scenario.config,
+            runner: runner,
+            projectRunner: runner,
+            environment: scenario.environment,
+            logs: scenario.logs,
+            timeouts: AndroidRuntimeTimeouts(cleanupGrace: .zero)
+        ).run()
+
+        let emulator = try #require(cleanup.report.items.first { $0.id == "android.emulator" })
+        if launcher == "exited" {
+            #expect(emulator.status == .skipped)
+            #expect(emulator.ownedRuntimeStopped == true)
+            #expect(cleanup.hasRemainingRecord == false)
+            #expect(try store.read() == nil)
+        } else {
+            #expect(emulator.status == .unknown)
+            #expect(emulator.ownedRuntimeStopped == nil)
+            #expect(cleanup.hasRemainingRecord == true)
+            #expect(try store.read()?.device?.launcherPID == 7001)
+        }
+        // Presence is observed, never acted on: nothing is stopped or killed.
+        #expect(state.all.map(\.description) == [command("ps", ["-p", "7001", "-o", "pid="])])
+    }
+
     @Test("a replaced reverse mapping is blocked, retained and exits one")
     func replacedReverseIsBlocked() async throws {
         let scenario = try runtimeScenario()

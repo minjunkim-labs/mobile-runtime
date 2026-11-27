@@ -392,8 +392,22 @@ struct AndroidCleanup: Sendable {
         guard device.state == .started else {
             return .skipped("android.emulator", "pre-existing Emulator preserved")
         }
-        guard let pid = device.launcherPID, pid > 0, device.serial?.isEmpty == false else {
-            return .unknown("android.emulator", "owned Emulator absence requires its recorded serial and launcher PID")
+        let missingEvidence = TeardownItem.unknown(
+            "android.emulator", "owned Emulator absence requires its recorded serial and launcher PID")
+        guard let pid = device.launcherPID, pid > 0 else { return missingEvidence }
+        if device.serial?.isEmpty != false {
+            // The serial is recorded only once the Emulator is ready. A launcher that ended before
+            // that leaves no owned Emulator to stop (#417); a live one may still become it.
+            guard let running = try await ownedLauncherPresence(pid) else {
+                return .unknown("android.emulator", "owned Emulator launcher presence could not be confirmed")
+            }
+            guard !running else {
+                return .unknown("android.emulator",
+                    "the Emulator launcher Runstir started (pid \(pid)) is still running and its Emulator is not recorded yet; "
+                    + "wait for it or stop it, then run mobile down --platform android again")
+            }
+            return TeardownItem(id: "android.emulator", status: .skipped,
+                detail: "owned Emulator launcher exited before its serial was recorded", ownedRuntimeStopped: true)
         }
         let sdk = try doctorContext.requiredSDKRoot()
         if let serial = device.serial {
