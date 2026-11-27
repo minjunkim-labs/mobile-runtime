@@ -25,3 +25,9 @@ claim은 이 프로젝트의 Runstir 실행이 그 기기에 남긴 앱을 뜻�
 ## AVD 이름을 읽지 못한 다른 Emulator (#383, 2026-11-24)
 
 `up`은 `adb -s <serial> emu avd name`에 답하지 않거나 시간 안에 답하지 않는 Emulator를 대상 AVD 선택에서 뺀다. 다른 HOME·사용자가 띄워 console 인증 token이 다른 Emulator, 부팅 중이거나 `offline`인 Emulator가 여기에 해당한다. 그런 Emulator 하나 때문에 `up` 전체를 멈추지 않는다. 그 Emulator는 재사용하지 않고 소유 기록에도 넣지 않는다. 그 Emulator가 대상 AVD를 이미 잡고 있을 수 있다. `up`이 Emulator를 새로 띄우면 launcher PID와 `started`를 먼저 기록하고, serial은 준비된 뒤에 기록한다. launcher를 띄우기 전에 이미 있던 serial은 나중에 이름이 읽혀도 그 serial로 받아들이지 않는다. 매 준비 확인에서는 Runstir가 시작한 launcher가 살아 있는지 `ps -p`로 본다. launcher가 끝났거나 살아 있는지 확인하지 못하면 serial을 기록하지 않고 즉시 실패한다. 이때 남은 PID만 있는 기록은 기존 `down` 규칙이 다룬다. 실패 문구는 이름을 읽지 못한 serial을 함께 보고한다. ADR-0043과 같은 기준이다. 앱 파일 작업의 부팅 후보 규칙(ADR-0043)은 바꾸지 않는다.
+
+## serial 없이 끝난 launcher (#417, 2026-11-27)
+
+`up`이 띄운 launcher가 준비 전에 끝나면 active-run 기록에 serial 없이 launcher PID와 `started`만 남는다. serial은 Emulator가 준비된 뒤에 기록하므로, 이 기록에서 소유한 Emulator가 있었다고 볼 근거는 PID뿐이다. `down`과 `up`의 rollback은 그 PID를 `ps -p`로 본다. PID가 없으면 소유한 Emulator는 존재하지 않는다. 이 항목은 `skipped`이고 `ownedRuntimeStopped`는 true다. 기록의 기기를 지운다. 살아 있는 PID나 확인하지 못한 관측은 지금처럼 `unknown`으로 보존한다. 어느 쪽에서도 신호를 보내지 않는다. 재사용된 PID는 살아 있는 것으로 보이므로 보존하는 쪽으로만 틀린다.
+
+`up`이 빌드된 제품은 있으나 기기를 기록하지 못했고, rollback이 이 Emulator의 부재를 확인했다면 설치도 claim도 없다. 이때 `up`은 대체한 reservation을 위 규칙대로 되돌린다. 그 밖에 기기에 닿은 뒤의 실패가 남긴 claim 없는 reservation은 그대로 보존한다.
