@@ -369,8 +369,8 @@ public enum WorkflowExecution {
                 }
             }
             // Without a built product no runtime stage ran, so the device is as this up found it (#373).
-            // A launcher that ended before any serial was recorded, and whose absence the rollback
-            // confirmed, left no Emulator, app or claim behind either (#417).
+            // A device stage that never handed over a device, whose owned Emulator the rollback confirmed
+            // absent (e.g. a launcher that ended before any serial was recorded), changed nothing here (#417).
             if platform == .android, let reservation, let report = up, leftNothingOnDevice(report.context.androidProduct) {
                 do {
                     try leases.restoreAfterRejectedInstallation(reservation)
@@ -505,8 +505,8 @@ public enum WorkflowExecution {
         return config
     }
 
-    /// True when this up changed nothing on its device: no product was built, or its Emulator
-    /// launcher ended before any device was recorded and the rollback confirmed that absence.
+    /// True when this up changed nothing on its device: no product was built, or the device stage
+    /// handed over no device and the rollback confirmed that its owned Emulator is absent.
     private static func leftNothingOnDevice(_ product: AndroidBuiltProduct?) -> Bool {
         guard let product else { return true }
         let confirmedAbsent = product.rollback?.contains {

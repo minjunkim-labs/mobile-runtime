@@ -509,24 +509,41 @@ struct NativeAndroidWorkflowTests {
         try fixture.assertPreserved()
     }
 
-    @Test("an up whose launcher ends before the AVD is ready leaves no recorded device or reservation (#417)")
-    func launcherEndedBeforeReady() async throws {
+    @Test("an up whose launcher ends before the AVD is ready leaves no recorded device or reservation (#417)",
+          arguments: [false, true])
+    func launcherEndedBeforeReady(unconfirmed: Bool) async throws {
         let fixture = try NativeAndroidFixture()
         var runner = try fixture.runner()
         // Another HOME's Emulator holds the AVD and cannot be read, so the launcher Runstir starts ends at once.
         runner.responses["adb devices"] = .ok("List of devices attached\nemulator-5556 device\n")
         runner.responses["adb -s emulator-5556 emu avd name"] = .failed(1, "KO: authentication\n")
-        runner.responses["ps -p 4242 -o pid="] = .failed(1, "")
+        runner.responses["ps -p 4242 -o pid="] = unconfirmed ? .failed(1, "ps: Operation not permitted\n") : .failed(1, "")
         let up = await WorkflowExecution.run(.up, input: fixture.workflowInput, runner: runner, leases: fixture.leases)
         #expect(up.exitCode != 0)
-        #expect(up.up?.failure?.message.contains("exited before") == true, Comment(rawValue: up.up?.failure?.message ?? ""))
+        let message = up.up?.failure?.message ?? ""
+        #expect(message.contains(unconfirmed ? "could not be confirmed" : "exited before"), Comment(rawValue: message))
 
         let store = AndroidActiveRunStore(project: fixture.project, logs: RunLogs(project: fixture.project))
-        #expect(try store.read()?.device == nil)
-        // The next up of another project is not refused by the failed one's reservation.
-        try await fixture.leases.check(device: .device(.android, "avd:Pixel"), project: "/next-project") { _ in
-            Issue.record("a launcher that never became an Emulator must not keep the device reserved")
-            return .unknown("the failed up's reservation remains")
+        let key = ResourceKey.device(.android, "avd:Pixel")
+        if unconfirmed {
+            // An unconfirmed absence keeps the record and the reservation, as before.
+            #expect(try store.read()?.device?.launcherPID == 4242)
+            await #expect(throws: ResourceConflict.self) {
+                try await fixture.leases.check(device: key, project: "/next-project") { _ in
+                    .unknown("the launcher absence is not confirmed")
+                }
+            }
+        } else {
+            #expect(try store.read()?.device == nil)
+            // The next up of another project is not refused by the failed one's reservation.
+            try await fixture.leases.check(device: key, project: "/next-project") { _ in
+                Issue.record("a launcher that never became an Emulator must not keep the device reserved")
+                return .unknown("the failed up's reservation remains")
+            }
+            // Nor is this project's own next up, once the AVD is readable again.
+            let again = await WorkflowExecution.run(.up, input: fixture.workflowInput,
+                runner: try fixture.runner(), leases: fixture.leases)
+            #expect(again.exitCode == 0, Comment(rawValue: again.up?.failure?.message ?? ""))
         }
         #expect(!runner.log.all.contains { $0.arguments.contains("kill") || $0.arguments.contains("-TERM") })
         try fixture.assertPreserved()

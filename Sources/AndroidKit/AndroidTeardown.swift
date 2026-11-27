@@ -401,7 +401,11 @@ struct AndroidCleanup: Sendable {
             guard let running = try await ownedLauncherPresence(pid) else {
                 return .unknown("android.emulator", "owned Emulator launcher presence could not be confirmed")
             }
-            guard !running else { return missingEvidence }
+            guard !running else {
+                return .unknown("android.emulator",
+                    "the Emulator launcher Runstir started (pid \(pid)) is still running and its Emulator is not recorded yet; "
+                    + "wait for it or stop it, then run mobile down --platform android again")
+            }
             return TeardownItem(id: "android.emulator", status: .skipped,
                 detail: "owned Emulator launcher exited before its serial was recorded", ownedRuntimeStopped: true)
         }
