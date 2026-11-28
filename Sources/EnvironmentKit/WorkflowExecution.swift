@@ -69,6 +69,8 @@ public enum WorkflowExecution {
         var up: UpReport?
         var down: TeardownReport?
         var devicesLoaded = false
+        // What a cancelled command's tools left running past the cleanup limit; reported as remaining.
+        let outlived = OutlivedProcesses()
 
         do {
             try Task.checkCancellation()
@@ -119,7 +121,7 @@ public enum WorkflowExecution {
                 throw selectionFailure("--scheme and --configuration apply only to iOS.")
             }
             let runner = suppliedRunner ?? SystemProcessRunner(environment: input.project.environment,
-                                                               workingDirectory: anchor.directory)
+                                                               workingDirectory: anchor.directory, outlived: outlived)
             let androidFlutter: FlutterAndroidWorkflow?
             if anchor.framework == .flutter && platform == .android && kind != .down {
                 // Copying and checking the SDK view can take minutes before validate reports.
@@ -423,6 +425,7 @@ public enum WorkflowExecution {
             operation.nextAction = "Check the failed tool and its logs. Run mobile doctor for the selected project and platform."
         }
         if let hint = up?.teardownHint { operation.remaining.append(hint) }
+        operation.remaining += outlived.entries.map(\.summary)
         if code == 130 && operation.remaining.isEmpty && !operation.completed.isEmpty {
             operation.remaining = ["Completed changes remain. Inspect this project's resources before retrying or running down."]
         }
