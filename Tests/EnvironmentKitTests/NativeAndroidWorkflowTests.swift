@@ -549,6 +549,35 @@ struct NativeAndroidWorkflowTests {
         try fixture.assertPreserved()
     }
 
+    @Test("a later up that proves the launcher gone settles the reservation an unconfirmed observation left (#421)")
+    func launcherConfirmedGoneAfterUnconfirmed() async throws {
+        let fixture = try NativeAndroidFixture()
+        var runner = try fixture.runner()
+        runner.responses["adb devices"] = .ok("List of devices attached\nemulator-5556 device\n")
+        runner.responses["adb -s emulator-5556 emu avd name"] = .failed(1, "KO: authentication\n")
+        runner.responses["ps -p 4242 -o pid="] = .failed(1, "ps: Operation not permitted\n")
+        let first = await WorkflowExecution.run(.up, input: fixture.workflowInput, runner: runner, leases: fixture.leases)
+        #expect(first.exitCode != 0)
+        let store = AndroidActiveRunStore(project: fixture.project, logs: RunLogs(project: fixture.project))
+        let key = ResourceKey.device(.android, "avd:Pixel")
+        #expect(try store.read()?.device?.launcherPID == 4242)
+
+        // This project's next up stops at the recorded incomplete identity. Its rollback finds the launcher
+        // gone and clears the record, so no later down can name the device to release the reservation.
+        runner.responses["ps -p 4242 -o pid="] = .failed(1, "")
+        let second = await WorkflowExecution.run(.up, input: fixture.workflowInput, runner: runner, leases: fixture.leases)
+        #expect(second.exitCode != 0)
+        let message = second.up?.failure?.message ?? ""
+        #expect(message.contains("incomplete Emulator identity"), Comment(rawValue: message))
+        #expect(try store.read()?.device == nil)
+        try await fixture.leases.check(device: key, project: "/next-project") { _ in
+            Issue.record("a reservation no recorded device can release must not outlive its proven-absent launcher")
+            return .unknown("the earlier unconfirmed reservation remains")
+        }
+        #expect(!runner.log.all.contains { $0.arguments.contains("kill") || $0.arguments.contains("-TERM") })
+        try fixture.assertPreserved()
+    }
+
     @Test("owned launcher termination requires an unambiguous final PID observation", arguments: [false, true])
     func ownedLauncherTermination(deniedAfterStop: Bool) async throws {
         let fixture = try NativeAndroidFixture()
