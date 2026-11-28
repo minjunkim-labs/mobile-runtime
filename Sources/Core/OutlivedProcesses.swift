@@ -6,21 +6,27 @@ import Foundation
 /// it back once the work has ended.
 public final class OutlivedProcesses: @unchecked Sendable {
     public struct Entry: Sendable, Equatable {
-        /// The command as `ProcessCommand.description` spells it, so arguments marked private stay hidden.
-        public let command: String
+        /// Only the program's file name. The full command line can carry private paths and
+        /// arguments from the project, and this ends up in results people paste into issues.
+        public let executable: String
         public let pids: [Int32]
 
-        public init(command: String, pids: [Int32]) {
-            self.command = command
+        public init(executable: String, pids: [Int32]) {
+            self.executable = executable
             self.pids = pids
         }
 
+        /// At most this many pids are named; a runaway tree must not make one huge sentence.
+        static let namedLimit = 5
+
         /// One sentence a person can act on: what was left, and that nothing here will wait for it.
         public var summary: String {
-            let list = pids.map(String.init).joined(separator: ", ")
-            return "Process\(pids.count == 1 ? "" : "es") \(list) started by `\(command)` "
-                + "\(pids.count == 1 ? "was" : "were") still running when Runstir stopped waiting after cancellation or timeout. "
-                + "Check \(pids.count == 1 ? "it" : "them") and quit \(pids.count == 1 ? "it" : "them") before the next run for this project."
+            let one = pids.count == 1
+            var list = pids.prefix(Self.namedLimit).map(String.init).joined(separator: ", ")
+            if pids.count > Self.namedLimit { list += ", and \(pids.count - Self.namedLimit) more" }
+            return "Process\(one ? "" : "es") \(list) started by `\(executable)` \(one ? "was" : "were") "
+                + "still running when Runstir stopped waiting after cancellation or timeout. "
+                + "Check \(one ? "it" : "them") and quit \(one ? "it" : "them") before the next run for this project."
         }
     }
 
@@ -31,8 +37,8 @@ public final class OutlivedProcesses: @unchecked Sendable {
 
     public var entries: [Entry] { lock.withLock { recorded } }
 
-    func record(command: String, pids: [Int32]) {
+    func record(executable: String, pids: [Int32]) {
         guard !pids.isEmpty else { return }
-        lock.withLock { recorded.append(Entry(command: command, pids: pids)) }
+        lock.withLock { recorded.append(Entry(executable: executable, pids: pids)) }
     }
 }

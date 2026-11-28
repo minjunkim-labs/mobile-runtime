@@ -50,7 +50,7 @@ struct OutlivedProcessesTests {
             let ready = ContinuousClock.now + .seconds(30)
             while !stuck.adopted, ContinuousClock.now < ready { try await Task.sleep(for: .milliseconds(10)) }
             // The fake sees the command before the runner records it as its root.
-            try await Task.sleep(for: .milliseconds(100))
+            try await Task.sleep(for: .milliseconds(500))
             task.cancel()
         }
         do {
@@ -63,7 +63,7 @@ struct OutlivedProcessesTests {
             #expect(!timeout)
         }
 
-        #expect(sink.entries == [OutlivedProcesses.Entry(command: "/bin/sleep 30", pids: [StuckDescendant.pid])])
+        #expect(sink.entries == [OutlivedProcesses.Entry(executable: "sleep", pids: [StuckDescendant.pid])])
     }
 
     @Test("a command that ends on its own records nothing")
@@ -75,11 +75,14 @@ struct OutlivedProcessesTests {
         #expect(sink.entries.isEmpty)
     }
 
-    @Test("an entry names the command and every process it left")
-    func summaryNamesCommandAndProcesses() {
-        let entry = OutlivedProcesses.Entry(command: "xcodebuild build", pids: [41, 42])
-        #expect(entry.summary.contains("41, 42"))
-        #expect(entry.summary.contains("`xcodebuild build`"))
-        #expect(OutlivedProcesses.Entry(command: "x", pids: [7]).summary.hasPrefix("Process 7 started"))
+    @Test("an entry names only the program and at most a few processes, never the arguments")
+    func summaryNamesProgramAndLimitsProcesses() {
+        let few = OutlivedProcesses.Entry(executable: "xcodebuild", pids: [41, 42])
+        #expect(few.summary.contains("41, 42"))
+        #expect(few.summary.contains("`xcodebuild`"))
+        #expect(OutlivedProcesses.Entry(executable: "x", pids: [7]).summary.hasPrefix("Process 7 started"))
+        let many = OutlivedProcesses.Entry(executable: "x", pids: Array(1...12))
+        #expect(many.summary.contains("1, 2, 3, 4, 5, and 7 more"))
+        #expect(!many.summary.contains("12"))
     }
 }

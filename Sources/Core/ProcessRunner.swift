@@ -389,7 +389,7 @@ public struct SystemProcessRunner: ProcessRunner {
         // so the caller is told it stopped only once nothing it started is still running.
         let survivors = await owned.settle(limit: settleLimit)
         if !survivors.isEmpty {
-            outlived?.record(command: command.description, pids: survivors.map(\.pid))
+            outlived?.record(executable: URL(fileURLWithPath: command.executable).lastPathComponent, pids: survivors.map(\.pid))
             logger.warning(
                 "processes started by the command outlived its cancellation",
                 metadata: [
