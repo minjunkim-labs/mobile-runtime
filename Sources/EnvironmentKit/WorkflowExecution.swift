@@ -252,6 +252,15 @@ public enum WorkflowExecution {
                     }
                 }
             }
+            // An earlier unconfirmed reservation is settled only by proof about its own device: a record that
+            // names another AVD, or cannot be read, never settles the reservation of the selected one (#421).
+            var recordNamesOtherDevice = false
+            if kind == .up, platform == .android, let device {
+                do {
+                    let recorded = try androidTeardownDeviceKey(anchor: anchor)
+                    recordNamesOtherDevice = recorded != nil && recorded != device
+                } catch { recordNamesOtherDevice = true }
+            }
             var reservation: InstallationReservation?
             if kind == .up, let device { reservation = try leases.reserveForInstallation(device: device, owner: owner) }
 
@@ -373,7 +382,7 @@ public enum WorkflowExecution {
                 if restore != .keep {
                     do {
                         try leases.restoreAfterRejectedInstallation(reservation,
-                            settlingEarlierUnconfirmed: restore == .settleEarlierUnconfirmed)
+                            settlingEarlierUnconfirmed: restore == .settleEarlierUnconfirmed && !recordNamesOtherDevice)
                     } catch {
                         operation.remaining.append("The device reservation was preserved: \(error)")
                     }
