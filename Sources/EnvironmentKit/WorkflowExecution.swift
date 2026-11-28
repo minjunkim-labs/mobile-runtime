@@ -425,10 +425,11 @@ public enum WorkflowExecution {
             operation.nextAction = "Check the failed tool and its logs. Run mobile doctor for the selected project and platform."
         }
         if let hint = up?.teardownHint { operation.remaining.append(hint) }
-        operation.remaining += outlived.entries.map(\.summary)
         if code == 130 && operation.remaining.isEmpty && !operation.completed.isEmpty {
             operation.remaining = ["Completed changes remain. Inspect this project's resources before retrying or running down."]
         }
+        // After the completed-changes note, whose condition is an otherwise empty `remaining`.
+        operation.remaining += outlived.entries.map(\.summary)
         if let down {
             operation.remaining += down.items.filter { $0.status == .failed || $0.status == .blocked || $0.status == .unknown }
                 .map { "\($0.id): \($0.detail ?? $0.status.rawValue)" }
