@@ -24,7 +24,8 @@ struct OutlivedProcessesTests {
                         return ProcessEntry(identity: ProcessIdentity(pid: pid, started: UInt64.max - 1),
                                             parent: self.lock.withLock { self.root } ?? 0)
                     }
-                    // The command itself, alive until it is reaped.
+                    // The command itself. kill(pid, 0) also succeeds on a zombie, unlike the real table, so this
+                    // relies on the runner having reaped the command before it settles.
                     guard kill(pid, 0) == 0 else { return nil }
                     self.lock.withLock { if self.root == nil { self.root = pid } }
                     return ProcessEntry(identity: ProcessIdentity(pid: pid, started: 1), parent: 1)
@@ -48,12 +49,19 @@ struct OutlivedProcessesTests {
         if !timeout {
             let ready = ContinuousClock.now + .seconds(30)
             while !stuck.adopted, ContinuousClock.now < ready { try await Task.sleep(for: .milliseconds(10)) }
+            // The fake sees the command before the runner records it as its root.
+            try await Task.sleep(for: .milliseconds(100))
             task.cancel()
         }
         do {
             _ = try await task.value
             Issue.record("the interrupted command must not succeed")
-        } catch {}
+        } catch let error as ProcessError {
+            guard case .timedOut = error else { throw error }
+            #expect(timeout)
+        } catch is CancellationError {
+            #expect(!timeout)
+        }
 
         #expect(sink.entries == [OutlivedProcesses.Entry(command: "/bin/sleep 30", pids: [StuckDescendant.pid])])
     }
