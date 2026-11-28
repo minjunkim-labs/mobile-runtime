@@ -215,11 +215,28 @@ public struct SystemProcessRunner: ProcessRunner {
     private let logger: Logger
     private let environment: [String: String]
     private let workingDirectory: URL?
+    private let outlived: OutlivedProcesses?
+    private let table: ProcessTable
+    private let settleLimit: Duration
 
-    public init(logger: Logger = Logger(label: "mobile.process"), environment: [String: String] = ProcessInfo.processInfo.environment, workingDirectory: URL? = nil) {
+    /// - Parameter outlived: where to record processes a cancelled or timed-out command started
+    ///   and that were still running after the cleanup limit. Nil keeps them in the log only.
+    public init(logger: Logger = Logger(label: "mobile.process"), environment: [String: String] = ProcessInfo.processInfo.environment,
+                workingDirectory: URL? = nil, outlived: OutlivedProcesses? = nil) {
+        self.init(logger: logger, environment: environment, workingDirectory: workingDirectory, outlived: outlived,
+                  table: .system, settleLimit: OwnedDescendants.settleLimit)
+    }
+
+    /// The process table and the limit are a seam for tests: a process that survives SIGKILL
+    /// cannot be made on a real host.
+    init(logger: Logger, environment: [String: String], workingDirectory: URL?, outlived: OutlivedProcesses?,
+         table: ProcessTable, settleLimit: Duration) {
         self.logger = logger
         self.environment = environment
         self.workingDirectory = workingDirectory
+        self.outlived = outlived
+        self.table = table
+        self.settleLimit = settleLimit
     }
 
     public func run(
@@ -254,7 +271,7 @@ public struct SystemProcessRunner: ProcessRunner {
         let environment = Subprocess.Environment.custom(values)
 
         let invocation = Self.invocation(command)
-        let owned = OwnedDescendants()
+        let owned = OwnedDescendants(table: table)
         let work = Task { () async throws -> ProcessResult in
             let executable: Subprocess.Executable = invocation.executable.hasPrefix("/")
                 ? .path(.init(invocation.executable)) : .name(invocation.executable)
@@ -370,8 +387,9 @@ public struct SystemProcessRunner: ProcessRunner {
         }
         // The command is gone; what its captured tree still holds is killed and awaited here,
         // so the caller is told it stopped only once nothing it started is still running.
-        let survivors = await owned.settle()
+        let survivors = await owned.settle(limit: settleLimit)
         if !survivors.isEmpty {
+            outlived?.record(executable: URL(fileURLWithPath: command.executable).lastPathComponent, pids: survivors.map(\.pid))
             logger.warning(
                 "processes started by the command outlived its cancellation",
                 metadata: [
